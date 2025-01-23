@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "src/galba_colormath.h"
+#include "galba_colormath.h"
 
 static void print_rgb(rgb_t p){
     printf("%u %u %u\n", p.r, p.g, p.b);

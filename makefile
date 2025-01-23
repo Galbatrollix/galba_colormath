@@ -7,10 +7,13 @@ C_COMPILER = gcc
 
  
 C_SOURCE_FOLDER = src
+C_INCLUDES_DIR = includes
+
+C_FLAGS += -iquote $(C_INCLUDES_DIR)
 
 C_SRC_FILES = $(wildcard $(C_SOURCE_FOLDER)/*.c)
 C_SRC_FILES += main.c
-C_HEADERS =  $(wildcard $(C_SOURCE_FOLDER)/*.h)
+C_HEADERS =  $(wildcard $(C_INCLUDES_DIR)/*.h)
 C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
 
 # adding Makefile itself to the rule prerequisites will make sure everything is recompiled if makefile content gets changed
@@ -21,6 +24,7 @@ $(APP_NAME).exe: $(C_OBJ_FILES) $(C_HEADERS) Makefile
 clean:
 	del /Q /F $(APP_NAME).exe
 	del /Q /F $(C_SOURCE_FOLDER)\\*.o
+	del /Q /F main.o
 
 run: $(APP_NAME).exe
 	$(APP_NAME).exe
