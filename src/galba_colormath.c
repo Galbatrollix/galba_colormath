@@ -1,0 +1,171 @@
+#include "galba_colormath.h"
+
+#include <math.h>
+
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
+/*
+
+	LAB XYZ RGB conversion functions
+
+*/
+
+// RGB to XYZ and other way around conversions logic from here
+// https://www.image-engineering.de/library/technotes/958-how-to-convert-between-srgb-and-ciexyz
+xyz_t XYZ_from_RGB(rgb_t rgb_input){
+
+	// step 1: calculating RGB' 
+	double rgb_prime[3] = {rgb_input.r, rgb_input.g, rgb_input.b};
+	for(int i=0; i<3; i++){
+	    // linearize data to range <0.0, 1.0>
+	    rgb_prime[i] /= 255; 
+	    
+		if(rgb_prime[i] <= 0.04045){
+			rgb_prime[i] /= 12.92;
+		}else{
+			double power_base = (rgb_prime[i] + 0.055) / 1.055;
+			rgb_prime[i] = pow((rgb_prime[i] + 0.055) / 1.055, 2.4);
+		}
+		rgb_prime[i] *= 100;
+	}
+
+	// step 2: apply transformation matrix on RGB'
+    double R_p = rgb_prime[0];
+	double G_p = rgb_prime[1];
+	double B_p = rgb_prime[2];
+
+	xyz_t result;
+	result.x = R_p * 0.4124564 + G_p * 0.3575761 + B_p * 0.1804375;
+	result.y = R_p * 0.2126729 + G_p * 0.7151522 + B_p * 0.0721750;
+	result.z = R_p * 0.0193339 + G_p * 0.1191920 + B_p * 0.9503041;
+
+	return result;
+
+}
+
+
+
+rgb_t RGB_from_XYZ(xyz_t xyz_input){
+	xyz_input.x /= 100;
+	xyz_input.y /= 100;
+	xyz_input.z /= 100;
+
+	double R_p = xyz_input.x *  3.2404542 + xyz_input.y * -1.5371385 + xyz_input.z * -0.4985314;
+	double G_p = xyz_input.x * -0.9692660 + xyz_input.y *  1.8760108 + xyz_input.z *  0.0415560;
+	double B_p = xyz_input.x *  0.0556434 + xyz_input.y * -0.2040259 + xyz_input.z *  1.0572252;
+
+	double rgb_prime[3] = {R_p, G_p, B_p};
+	for(int i=0; i<3; i++){
+		if(rgb_prime[i] <= 0.0031308){
+			rgb_prime[i] *= 12.92;
+		}else{
+			rgb_prime[i] = 1.055 * pow(rgb_prime[i], 1/2.4) - 0.55;
+		}
+
+		rgb_prime[i] *= 255;
+	}
+
+	rgb_t result = (rgb_t){
+		.r = (unsigned char) MAX(MIN(rgb_prime[0]+ 0.5, 255.0), 0.0),
+		.g = (unsigned char) MAX(MIN(rgb_prime[1]+ 0.5, 255.0), 0.0),
+		.b = (unsigned char) MAX(MIN(rgb_prime[2]+ 0.5, 255.0), 0.0)
+	};
+	return result;
+
+
+}
+
+
+xyz_t XYZ_from_LAB(lab_t lab_input){
+	return (xyz_t){0,0,0};
+}
+lab_t LAB_from_XYZ(xyz_t xyz_input){
+	return (lab_t){0,0,0};
+}
+
+rgb_t RGB_from_LAB(lab_t lab_input){
+	return (rgb_t){0,0,0};
+}
+lab_t LAB_from_RGB(rgb_t rgb_input){
+	return (lab_t){0,0,0};
+}
+
+/*
+
+	Int encoding related functions:
+
+*/
+
+// Least significant byte of int representation is interpretted as blue channel.
+// Second least significant byte of int repr. is interpretted as green channel.
+// Third least significant byte of int repr. is interpretted as red channel.
+// Most significant byte is ignored and has no effect on the return value.
+rgb_t RGB_from_i32(int32_t int_repr){
+	return (rgb_t){
+		.r = (unsigned char) (int_repr >> 16) & 0xFF, 
+		.g = (unsigned char) (int_repr >> 8 ) & 0xFF,
+		.b = (unsigned char) (int_repr >> 0 ) & 0xFF
+	};
+}
+
+int32_t i32_from_RGB(rgb_t rgb_input){
+ 	return (int32_t)rgb_input.r * 256 * 256 + (int32_t)rgb_input.g * 256 + rgb_input.b; 
+}
+
+/*
+
+	Hex string encoding related functions:
+
+*/
+
+
+
+static unsigned char hex_letter_to_right_halfbyte(unsigned char letter){
+	if(letter <= '9' && letter >= '0'){
+		return letter - '0';
+	}
+	if(letter <= 'F' && letter >= 'A'){
+		return letter - 'A' + 10;
+	}
+	if(letter <= 'f' && letter >= 'a'){
+		return letter - 'a' + 10;
+	}
+	return 0;
+
+}
+
+static char right_halfbyte_to_hex_letter(unsigned char halfbyte){
+	static const char lookup[17] = "0123456789ABCDEF";
+	// unsafe, be sure this function is called with halfbyte no larger than 15.
+	return lookup[halfbyte]; 
+}
+
+rgb_t RGB_from_HEX(const char hex_arr[6]){
+	int32_t int_repr = 0;
+
+	for(int i=0; i<6; i++){
+		unsigned char halfbyte = hex_letter_to_right_halfbyte(hex_arr[i]);
+
+		int_repr <<= 4;
+		int_repr += halfbyte;
+	}
+	return RGB_from_i32(int_repr);
+}
+
+
+
+void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input){
+	int32_t int_repr = i32_from_RGB(rgb_input);
+	for(int i=0; i<6; i++){
+	    unsigned char halfbyte = (int_repr >> (4 * i)) & 0x0F;
+		arr_buffer[5 - i] = right_halfbyte_to_hex_letter(halfbyte);
+	}
+}
+
+
+void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input){
+	string_buffer[0] = '#';
+	string_buffer[7] = '\0';
+	HEX_from_RGB(string_buffer + 1, rgb_input);
+}
