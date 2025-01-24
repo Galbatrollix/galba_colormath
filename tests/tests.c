@@ -129,16 +129,16 @@ const int32_t HEXINT_BEYOND_CASES[HEX_CASES_LEN] = {
 		HEXINT_CASES[2] | ((int32_t)0xfc << 8*3),
 		HEXINT_CASES[3] | ((int32_t)0xa1 << 8*3),
 		HEXINT_CASES[4] | ((int32_t)0x0c << 8*3),
-		HEXINT_CASES[5] | ((int32_t)0x11 << 8*3)
- };
+		HEXINT_CASES[5] | ((int32_t)0x11 << 8*3),
+};
 
 const char HEX_NONULL[HEX_CASES_LEN][6] = {
-	{'0', '0', '1', 'f', '1', '2'},
-	{'1', '3', '3', '1', '5', '1'},
-	{'f', 'f', 'f', 'f', 'f', 'f'},
-	{'f', '1', 'f', '1', 'f', '1'},
-	{'1', '0', '0', '0', '0', '0'},
-	{'a', 'b', 'c', 'd', 'f', 'a'},
+		{'0', '0', '1', 'f', '1', '2'},
+		{'1', '3', '3', '1', '5', '1'},
+		{'f', 'f', 'f', 'f', 'f', 'f'},
+		{'f', '1', 'f', '1', 'f', '1'},
+		{'1', '0', '0', '0', '0', '0'},
+		{'a', 'b', 'c', 'd', 'f', 'a'},
 };
 
 const char HEX_WRONGCHARS[HEX_CASES_LEN][10] = {"#XH1f12", "#133151", "#FFFFFF", "#F1F1F1", "#1\0\0000", "#abcdfa"};
