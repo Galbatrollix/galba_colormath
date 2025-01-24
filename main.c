@@ -15,10 +15,12 @@ int main(){
 	char string[] = "#ff1134";
 
 	print_rgb(RGB_from_HEX(string+1));
-	
-	test_i32_rgb_conversion3();
-	test_i32_rgb_conversion1();
+
+	// test_i32_rgb_conversion1();
 	// test_i32_rgb_conversion2();
+	// test_i32_rgb_conversion3();
+	test_i32_hex_conversion_happy1();
+	test_i32_hex_conversion_happy2();
 
 
 

@@ -25,7 +25,7 @@ xyz_t XYZ_from_RGB(rgb_t rgb_input){
 			rgb_prime[i] /= 12.92;
 		}else{
 			double power_base = (rgb_prime[i] + 0.055) / 1.055;
-			rgb_prime[i] = pow((rgb_prime[i] + 0.055) / 1.055, 2.4);
+			rgb_prime[i] = pow(power_base, 2.4);
 		}
 		rgb_prime[i] *= 100;
 	}
@@ -141,7 +141,8 @@ static char right_halfbyte_to_hex_letter(unsigned char halfbyte){
 	return lookup[halfbyte]; 
 }
 
-rgb_t RGB_from_HEX(const char hex_arr[6]){
+
+int32_t i32_from_HEX(const char hex_arr[6]){
 	int32_t int_repr = 0;
 
 	for(int i=0; i<6; i++){
@@ -150,13 +151,9 @@ rgb_t RGB_from_HEX(const char hex_arr[6]){
 		int_repr <<= 4;
 		int_repr += halfbyte;
 	}
-	return RGB_from_i32(int_repr);
+	return int_repr;
 }
-
-
-
-void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input){
-	int32_t int_repr = i32_from_RGB(rgb_input);
+void HEX_from_i32(char arr_buffer[6], int32_t int_repr){
 	for(int i=0; i<6; i++){
 	    unsigned char halfbyte = (int_repr >> (4 * i)) & 0x0F;
 		arr_buffer[5 - i] = right_halfbyte_to_hex_letter(halfbyte);
@@ -164,8 +161,28 @@ void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input){
 }
 
 
+
+rgb_t RGB_from_HEX(const char hex_arr[6]){
+	int32_t int_repr = i32_from_HEX(hex_arr);
+	return RGB_from_i32(int_repr);
+}
+
+
+
+void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input){
+	int32_t int_repr = i32_from_RGB(rgb_input);
+	HEX_from_i32(arr_buffer, int_repr);
+}
+
+
 void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input){
 	string_buffer[0] = '#';
 	string_buffer[7] = '\0';
 	HEX_from_RGB(string_buffer + 1, rgb_input);
+}
+
+void HEX_from_i32_2(char string_buffer[8], int32_t int_repr){
+	string_buffer[0] = '#';
+	string_buffer[7] = '\0';
+	HEX_from_i32(string_buffer + 1, int_repr);
 }

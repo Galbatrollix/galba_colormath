@@ -5,7 +5,12 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdint.h>
+#include <string.h>
 
+
+/*
+	Helper functions for testing
+*/
 static bool rgb_equals(rgb_t l, rgb_t r){
 	return l.r == r.r && l.g == r.g && l.b == r.b;
 }
@@ -13,7 +18,14 @@ static bool rgb_equals(rgb_t l, rgb_t r){
 static void print_rgb(rgb_t p){
     printf("rgb(%u %u %u)", p.r, p.g, p.b);
 }
-
+// DISREGARDS NULL TERMINATOR BY DESIGN
+static void to_uppercase_n(char * arr, size_t size){
+	for(size_t i = 0; i<size; i++){
+		if(arr[i] >= 'a' && arr[i] <= 'z'){
+			arr[i] = arr[i] + 'A' - 'a';
+		}
+	}
+}
 
 // tests if all RGB values map correctly to int32_t and back and forth
 bool test_i32_rgb_conversion1(void){
@@ -49,6 +61,8 @@ bool test_i32_rgb_conversion2(void){
 	int32_t number = (int32_t)256 * 256 * 256 - 1;
 
 	do{
+		number += 1;
+
 		int32_t most_significant_byte_mask = (int32_t)0xFF << (8 * 3);
 		rgb_t rgb_last_3_bytes = RGB_from_i32(number & ~most_significant_byte_mask);
 		rgb_t rgb_normal = RGB_from_i32(number);
@@ -56,7 +70,6 @@ bool test_i32_rgb_conversion2(void){
 			printf("Test test_i32_rgb_conversion1 FAILED at: %" PRId32"\n", number);
 			return false;
 		}
-		number += 1;
 	}while(number != INT32_MAX);
 
 
@@ -66,7 +79,7 @@ bool test_i32_rgb_conversion2(void){
 		rgb_t rgb_last_3_bytes = RGB_from_i32(number & ~most_significant_byte_mask);
 		rgb_t rgb_normal = RGB_from_i32(number);
 		if(! rgb_equals(rgb_normal, rgb_last_3_bytes)){	
-			printf("Test test_i32_rgb_conversion1 FAILED at: %" PRId32"\n", number);
+			printf("Test test_i32_rgb_conversion1 FAILED at: %" PRId32 "\n", number);
 			return false;
 		}
 	}
@@ -97,3 +110,69 @@ bool test_i32_rgb_conversion3(void){
 	puts("SUCCESS");
 	return true;
 }
+
+
+#define HEX_CASES_LEN 6
+const int32_t HEXINT_CASES[HEX_CASES_LEN] = {0x001f12, 0x133151, 0xFFFFFF, 0xF1F1F1, 0x100000, 0xabcdfa};
+const char HEX_PATTERNS[HEX_CASES_LEN][10] = {"#001f12", "#133151", "#FFFFFF", "#F1F1F1", "#100000", "#abcdfa"};
+
+// some happy cases of integers in range of rgb and their coresponding hex patterns
+bool test_i32_hex_conversion_happy1(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		char as_upper[10];
+		memcpy(as_upper, HEX_PATTERNS[i], 10);
+		to_uppercase_n(as_upper, 10);
+
+		char buffer[10];
+		memcpy(buffer, HEX_PATTERNS[i], 10);
+
+		int32_t expected = HEXINT_CASES[i];
+		int32_t from_pattern = i32_from_HEX(buffer + 1);
+		int32_t from_uppercase = i32_from_HEX(as_upper + 1);
+		if(expected != from_pattern || from_pattern != from_uppercase){
+			printf("Test test_i32_hex_conversion_happy1 FAILED at: %" PRId32"\n", expected);
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+}
+
+bool test_i32_hex_conversion_happy2(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		char buffer[10];
+		memset(buffer, 'V', 10);
+		HEX_from_i32(buffer, HEXINT_CASES[i]);
+		if(buffer[6] != 'V'){
+			printf("Test test_i32_hex_conversion_happy2 FAILED at: %" PRId32"\n"
+					"Function HEX_from_i32 written past 6th byte\n",HEXINT_CASES[i]);
+			return false;
+		}
+
+		char str_buffer[10];
+		memset(str_buffer, 'V', 10);
+		HEX_from_i32_2(str_buffer, HEXINT_CASES[i]);
+		if(str_buffer[0] != '#'){
+			printf("Test test_i32_hex_conversion_happy2 FAILED at: %" PRId32"\n"
+					"Function HEX_from_i32_2 didnt write '#' \n", HEXINT_CASES[i]);
+			return false;
+		}
+		if(str_buffer[7] != '\0'){
+			printf("Test test_i32_hex_conversion_happy2 FAILED at: %" PRId32"\n"
+					"Function HEX_from_i32_2 didnt write null terminator \n", HEXINT_CASES[i]);
+			return false;
+		}
+
+		int cmp_result = memcmp(buffer, str_buffer + 1, 6);
+		if(cmp_result != 0){
+			printf("Test test_i32_hex_conversion_happy2 FAILED at: %" PRId32"\n"
+					"Functions HEX_from_i32_2 and HEX_from_i32 wrote different hex.\n", HEXINT_CASES[i]);
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+}
+
