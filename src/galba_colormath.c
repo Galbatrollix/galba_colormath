@@ -115,11 +115,9 @@ int32_t i32_from_RGB(rgb_t rgb_input){
 
 /*
 
-	Hex string encoding related functions:
+	Hex string encoding related internal functions:
 
 */
-
-
 
 static unsigned char hex_letter_to_right_halfbyte(unsigned char letter){
 	if(letter <= '9' && letter >= '0'){

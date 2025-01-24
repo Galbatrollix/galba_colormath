@@ -114,6 +114,14 @@ bool test_i32_rgb_conversion3(void){
 
 #define HEX_CASES_LEN 6
 const int32_t HEXINT_CASES[HEX_CASES_LEN] = {0x001f12, 0x133151, 0xFFFFFF, 0xF1F1F1, 0x100000, 0xabcdfa};
+const rgb_t HEXRGB_CASES[HEX_CASES_LEN] = {
+	{0x00, 0x1f, 0x12},
+	{0x13, 0x31, 0x51},
+	{0xFF, 0xFF, 0xFF},
+	{0xF1, 0xF1, 0xF1},
+	{0x10, 0x00, 0x00},
+	{0xab, 0xcd, 0xfa}
+};
 const char HEX_PATTERNS[HEX_CASES_LEN][10] = {"#001f12", "#133151", "#FFFFFF", "#F1F1F1", "#100000", "#abcdfa"};
 
 // some happy cases of integers in range of rgb and their coresponding hex patterns
@@ -141,6 +149,10 @@ bool test_i32_hex_conversion_happy1(void){
 
 bool test_i32_hex_conversion_happy2(void){
 	for(int i=0; i<HEX_CASES_LEN; i++){
+		char as_upper[10];
+		memcpy(as_upper, HEX_PATTERNS[i], 10);
+		to_uppercase_n(as_upper, 10);
+
 		char buffer[10];
 		memset(buffer, 'V', 10);
 		HEX_from_i32(buffer, HEXINT_CASES[i]);
@@ -167,7 +179,14 @@ bool test_i32_hex_conversion_happy2(void){
 		int cmp_result = memcmp(buffer, str_buffer + 1, 6);
 		if(cmp_result != 0){
 			printf("Test test_i32_hex_conversion_happy2 FAILED at: %" PRId32"\n"
-					"Functions HEX_from_i32_2 and HEX_from_i32 wrote different hex.\n", HEXINT_CASES[i]);
+					"Functions HEX_from_i32_2 and HEX_from_i32 wrote different hex\n", HEXINT_CASES[i]);
+			return false;
+		}
+
+		cmp_result = memcmp(as_upper, str_buffer, 7);
+		if(cmp_result != 0){
+			printf("Test test_i32_hex_conversion_happy2 FAILED\n"
+					"Functions HEX_from_i32_2 and HEX_from_i32 didnt write in uppercase\n");
 			return false;
 		}
 
@@ -176,3 +195,80 @@ bool test_i32_hex_conversion_happy2(void){
 	return true;
 }
 
+bool test_rgb_hex_conversion_happy1(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		char as_upper[10];
+		memcpy(as_upper, HEX_PATTERNS[i], 10);
+		to_uppercase_n(as_upper, 10);
+
+		char buffer[10];
+		memcpy(buffer, HEX_PATTERNS[i], 10);
+
+		rgb_t expected = HEXRGB_CASES[i];
+		rgb_t from_pattern = RGB_from_HEX(buffer + 1);
+		rgb_t from_uppercase = RGB_from_HEX(as_upper + 1);
+		if(!rgb_equals(expected, from_pattern) || !rgb_equals(from_pattern, from_uppercase)){
+			printf("Test test_i32_hex_conversion_happy1 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			putchar('\n');
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+
+}
+bool test_rgb_hex_conversion_happy2(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		char as_upper[10];
+		memcpy(as_upper, HEX_PATTERNS[i], 10);
+		to_uppercase_n(as_upper, 10);
+
+		char buffer[10];
+		memset(buffer, 'V', 10);
+		HEX_from_RGB(buffer, HEXRGB_CASES[i]);
+		if(buffer[6] != 'V'){
+			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			printf("\nFunction HEX_from_RGB written past 6th byte\n");
+			return false;
+
+		}
+
+		char str_buffer[10];
+		memset(str_buffer, 'V', 10);
+		HEX_from_RGB_2(str_buffer, HEXRGB_CASES[i]);
+		if(str_buffer[0] != '#'){
+			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			printf("\nFunction HEX_from_RGB_2 didnt write '#'\n");
+			return false;
+		}
+		if(str_buffer[7] != '\0'){
+			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			printf("\nFunction HEX_from_RGB_2 didnt write null terminator\n");
+			return false;
+		}
+
+		int cmp_result = memcmp(buffer, str_buffer + 1, 6);
+		if(cmp_result != 0){
+			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			printf("\nFunctions HEX_from_RGB_2 and HEX_from_RGB wrote different hex\n");
+			return false;
+		}
+
+		cmp_result = memcmp(as_upper, str_buffer, 7);
+		if(cmp_result != 0){
+			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
+			print_rgb(HEXRGB_CASES[i]);
+			printf("\nFunctions HEX_from_RGB_2 and HEX_from_RGB didnt write in uppercase\n");
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+}
