@@ -8,10 +8,13 @@ C_COMPILER = gcc
  
 C_SOURCE_FOLDER = src
 C_INCLUDES_DIR = includes
+TEST_FOLDER = tests
 
-C_FLAGS += -iquote $(C_INCLUDES_DIR)
+# adding header directories
+C_FLAGS += -iquote $(C_INCLUDES_DIR) -iquote $(TEST_FOLDER)
 
 C_SRC_FILES = $(wildcard $(C_SOURCE_FOLDER)/*.c)
+C_SRC_FILES += $(wildcard $(TEST_FOLDER)/*.c)
 C_SRC_FILES += main.c
 C_HEADERS =  $(wildcard $(C_INCLUDES_DIR)/*.h)
 C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
@@ -24,6 +27,7 @@ $(APP_NAME).exe: $(C_OBJ_FILES) $(C_HEADERS) Makefile
 clean:
 	del /Q /F $(APP_NAME).exe
 	del /Q /F $(C_SOURCE_FOLDER)\\*.o
+	del /Q /F $(TEST_FOLDER)\\*.o
 	del /Q /F main.o
 
 run: $(APP_NAME).exe

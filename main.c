@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include "tests.h"
 #include "galba_colormath.h"
 
 static void print_rgb(rgb_t p){
@@ -14,5 +15,11 @@ int main(){
 	char string[] = "#ff1134";
 
 	print_rgb(RGB_from_HEX(string+1));
+	
+	test_i32_rgb_conversion3();
+	test_i32_rgb_conversion1();
+	// test_i32_rgb_conversion2();
+
+
 
 }
