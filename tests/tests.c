@@ -113,7 +113,6 @@ bool test_i32_rgb_conversion3(void){
 
 
 #define HEX_CASES_LEN 6
-const int32_t HEXINT_CASES[HEX_CASES_LEN] = {0x001f12, 0x133151, 0xFFFFFF, 0xF1F1F1, 0x100000, 0xabcdfa};
 const rgb_t HEXRGB_CASES[HEX_CASES_LEN] = {
 	{0x00, 0x1f, 0x12},
 	{0x13, 0x31, 0x51},
@@ -123,6 +122,26 @@ const rgb_t HEXRGB_CASES[HEX_CASES_LEN] = {
 	{0xab, 0xcd, 0xfa}
 };
 const char HEX_PATTERNS[HEX_CASES_LEN][10] = {"#001f12", "#133151", "#FFFFFF", "#F1F1F1", "#100000", "#abcdfa"};
+const int32_t HEXINT_CASES[HEX_CASES_LEN] = {0x001f12, 0x133151, 0xFFFFFF, 0xF1F1F1, 0x100000, 0xabcdfa};
+const int32_t HEXINT_BEYOND_CASES[HEX_CASES_LEN] = { 
+		HEXINT_CASES[0] | ((int32_t)0xff << 8*3),
+		HEXINT_CASES[1] | ((int32_t)0xfa << 8*3),
+		HEXINT_CASES[2] | ((int32_t)0xfc << 8*3),
+		HEXINT_CASES[3] | ((int32_t)0xa1 << 8*3),
+		HEXINT_CASES[4] | ((int32_t)0x0c << 8*3),
+		HEXINT_CASES[5] | ((int32_t)0x11 << 8*3)
+ };
+
+const char HEX_NONULL[HEX_CASES_LEN][6] = {
+	{'0', '0', '1', 'f', '1', '2'},
+	{'1', '3', '3', '1', '5', '1'},
+	{'f', 'f', 'f', 'f', 'f', 'f'},
+	{'f', '1', 'f', '1', 'f', '1'},
+	{'1', '0', '0', '0', '0', '0'},
+	{'a', 'b', 'c', 'd', 'f', 'a'},
+};
+
+const char HEX_WRONGCHARS[HEX_CASES_LEN][10] = {"#XH1f12", "#133151", "#FFFFFF", "#F1F1F1", "#1\0\0000", "#abcdfa"};
 
 // some happy cases of integers in range of rgb and their coresponding hex patterns
 bool test_i32_hex_conversion_happy1(void){
@@ -265,6 +284,58 @@ bool test_rgb_hex_conversion_happy2(void){
 			printf("Test test_rgb_hex_conversion_happy2 FAILED at: ");
 			print_rgb(HEXRGB_CASES[i]);
 			printf("\nFunctions HEX_from_RGB_2 and HEX_from_RGB didnt write in uppercase\n");
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+}
+
+
+bool test_hex_conversion_unusual1(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		int32_t from_nonull = i32_from_HEX(HEX_NONULL[i]);
+		int32_t from_wrongchars = i32_from_HEX(HEX_WRONGCHARS[i] + 1);
+		int32_t expected = HEXINT_CASES[i];
+		if(expected != from_nonull || expected != from_wrongchars){
+			printf("Test test_hex_conversion_unusual1 FAILED at: %" PRId32"\n", expected);
+			return false;
+		}
+
+	}
+	puts("SUCCESS");
+	return true;
+}
+bool test_hex_conversion_unusual2(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		char buffer[10];
+		HEX_from_i32(buffer, HEXINT_BEYOND_CASES[i]);
+		char str_buffer[10];
+		HEX_from_i32_2(str_buffer, HEXINT_BEYOND_CASES[i]);
+
+		int32_t converted_back2 = i32_from_HEX(str_buffer + 1);
+		int32_t converted_back = i32_from_HEX(buffer);
+		int32_t expected = HEXINT_CASES[i];
+		if(converted_back != HEXINT_CASES[i] || converted_back2 != HEXINT_CASES[i]){
+			printf("Test test_hex_conversion_unusual2 FAILED at: %" PRId32"\n", expected);
+			return false;
+		}
+	}
+	puts("SUCCESS");
+	return true;
+}
+
+bool test_hex_conversion_unusual3(void){
+	for(int i=0; i<HEX_CASES_LEN; i++){
+		rgb_t from_nonull = RGB_from_HEX(HEX_NONULL[i]);
+		rgb_t from_wrongchars = RGB_from_HEX(HEX_WRONGCHARS[i] + 1);
+		rgb_t expected = HEXRGB_CASES[i];
+		if(!rgb_equals(from_nonull, expected) || !rgb_equals(from_wrongchars, expected)){
+
+			printf("Test test_hex_conversion_unusual3 FAILED at: ");
+			print_rgb(expected);
+			puts("");
 			return false;
 		}
 

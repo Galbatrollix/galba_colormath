@@ -15,5 +15,9 @@ bool test_i32_hex_conversion_happy2(void);
 bool test_rgb_hex_conversion_happy1(void);
 bool test_rgb_hex_conversion_happy2(void);
 
+bool test_hex_conversion_unusual1(void);
+bool test_hex_conversion_unusual2(void);
+bool test_hex_conversion_unusual3(void);
+
 
 #endif //GALBA_COLORMATH_TEST
