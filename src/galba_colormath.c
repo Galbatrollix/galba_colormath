@@ -157,7 +157,7 @@ rgb_t RGB_from_XYZ(xyz_t xyz_input){
 		if(rgb_prime[i] <= 0.0031308){
 			rgb_prime[i] *= 12.92;
 		}else{
-			rgb_prime[i] = 1.055 * pow(rgb_prime[i], 1/2.4) - 0.55;
+			rgb_prime[i] = 1.055 * pow(rgb_prime[i], 1/2.4) - 0.055;
 		}
 
 		rgb_prime[i] *= 255;
@@ -177,18 +177,47 @@ rgb_t RGB_from_XYZ(xyz_t xyz_input){
 // http://www.brucelindbloom.com/index.html?LContinuity.html
 // http://brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 
-
-//http://www.brucelindbloom.com/index.html?Eqn_Lab_to_XYZ.html
-
-#define LAB_XYZ_e (216.0/24389)
+#define LAB_XYZ_e (216.0 / 24389)
+#define LAB_XYZ_k (24389 / 27.0)
 #define LAB_XYZ_k_by_116 (24389/(27.0 * 116))
 
-#define LAB_XYZ_16_by_116 (16.0/116)
+#define LAB_XYZ_16_by_116 (16.0/116)	
 
 
-
+//http://www.brucelindbloom.com/index.html?Eqn_Lab_to_XYZ.html
 xyz_t XYZ_from_LAB(lab_t lab_input){
-	return (xyz_t){0,0,0};
+	double Fy = (lab_input.l + 16) / 116;
+	double Fz = Fy - (lab_input.b / 200);
+	double Fx = Fy + (lab_input.a / 500);
+
+	// its weird but the source's formula says different computation is made for Yr
+	// probably some big IQ math im too uneducated to comprehend
+	double Xr, Yr, Zr;
+	if(lab_input.l > LAB_XYZ_k * LAB_XYZ_e){
+		double temp = (lab_input.l + 16) / 116;
+		Yr = temp*temp*temp;
+	}else{
+		Yr = lab_input.l / LAB_XYZ_k;
+	}
+
+	if( Fx*Fx*Fx > LAB_XYZ_e){
+		Xr = Fx*Fx*Fx;
+	}else{
+		Xr = (116 * Fx - 16) / LAB_XYZ_k;
+	}
+
+	if( Fz*Fz*Fz > LAB_XYZ_e){
+		Zr = Fz*Fz*Fz;
+	}else{
+		Zr = (116 * Fz - 16) / LAB_XYZ_k;
+	}
+
+	// D65 white reference point
+	return (xyz_t){
+		.x = Xr * 95.047,
+		.y = Yr * 100.0,
+		.z = Zr * 108.883,
+	};
 }
 
 // http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_Lab.html
@@ -217,8 +246,9 @@ lab_t LAB_from_XYZ(xyz_t xyz_input){
 
 
 rgb_t RGB_from_LAB(lab_t lab_input){
-	return (rgb_t){0,0,0};
+	return RGB_from_XYZ(XYZ_from_LAB(lab_input));
 }
 lab_t LAB_from_RGB(rgb_t rgb_input){
-	return (lab_t){0,0,0};
+	return LAB_from_XYZ(XYZ_from_RGB(rgb_input));
 }
+
