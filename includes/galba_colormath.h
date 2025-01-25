@@ -45,14 +45,43 @@ void HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
 
 
 
-double euclidean(rgb_t color1, rgb_t color2);
-int32_t euclidean_noroot(rgb_t color1, rgb_t color2);
+double euclid_dist(rgb_t color1, rgb_t color2);
+double euclid_dist_noroot(rgb_t color1, rgb_t color2);
 
 double delta_CIE76(lab_t color1, lab_t color2);
+
+typedef struct{
+	double K1, K2, KL, KC, KH;
+}CIE94_params;
+
+#define CIE94_TEXTILES ((const CIE94_params){.K1 = 0.048, .K2 = 0.014, .KL = 2, .KC = 1, .KH = 1 })
+#define CIE94_GRAPHIC_ARTS ((const CIE94_params){.K1 = 0.045, .K2 = 0.015, .KL = 1, .KC = 1, .KH = 1})
+
+// equivalent to CIE94_full with parameter CIE94_GRAPHIC_ARTS
 double delta_CIE94(lab_t color1, lab_t color2);
+double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params);
+
+
+typedef struct{
+	double lightness, chroma, hue;
+}CIEDE2000_params;
+
+#define CIEDE2000_BASE ((const CIEDE2000_params){.lightness = 1, .chroma = 1, .hue = 1})
+
+// equivalent to CIE2000_full with parameter CIEDE2000_BASE
 double delta_CIEDE2000(lab_t color1, lab_t color2);
+double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params);
+
+typedef struct{
+	double lightness, chroma;
+}CMC_params;
+
+#define CMC_ACCEPTABILITY ((const CMC_params){.lightness = 2, .chroma = 1})
+#define CMC_PERCEPTIBILITY ((const CMC_params){.lightness = 1, .chroma = 1})
+ 
+// equivalent to CMC_full with parameter CMC_PERCEPTIBILITY
 double delta_CMC(lab_t color1, lab_t color2);
-double delta_CMC_extended(lab_t color1, lab_t color2, double lightness, double chroma);
+double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params);
 
 
 
