@@ -59,10 +59,8 @@ typedef struct{
 
 // equivalent to CIE94_full with parameter CIE94_GRAPHIC_ARTS
 double delta_CIE94_g(lab_t color1, lab_t color2);
-
 // equivalent to CIE94_full with parameter CIE94_TEXTILES
 double delta_CIE94_t(lab_t color1, lab_t color2);
-
 double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params);
 
 
@@ -84,7 +82,9 @@ typedef struct{
 #define CMC_PERCEPTIBILITY ((const CMC_params){.lightness = 1, .chroma = 1})
  
 // equivalent to CMC_full with parameter CMC_PERCEPTIBILITY
-double delta_CMC(lab_t color1, lab_t color2);
+double delta_CMC_p(lab_t color1, lab_t color2);
+// equivalent to CMC_full with parameter CMC_ACCEPTIBILITY
+double delta_CMC_a(lab_t color1, lab_t color2);
 double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params);
 
 
