@@ -104,6 +104,10 @@ static bool rgb_equals(rgb_t l, rgb_t r){
 	return l.r == r.r && l.g == r.g && l.b == r.b;
 }
 
+static void lab_print(lab_t dupa){
+	printf("LAB(%lf %lf %lf)\n", dupa.l, dupa.a, dupa.b);
+}
+
 int main(void){
 	// test_i32_rgb_conversion1();
 	// test_i32_rgb_conversion2();
@@ -130,15 +134,27 @@ int main(void){
     printf("XYZ %lf %lf %lf\n", outputxyz.x, outputxyz.y, outputxyz.z);
     printf("RGB %u %u %u\n", output.r, output.g, output.b);
 
-    int different = 0;
-    for(int i = 0; i< 256*256*256 ;i++){
-    	rgb_t start = RGB_from_i32(i);
-    	rgb_t end = RGB_from_XYZ(XYZ_from_LAB(LAB_from_XYZ(XYZ_from_RGB(start))));
-    	if(!rgb_equals(start, end)){
-    		different += 1;
-    	}
-    }
+    // int different = 0;
+    // for(int i = 0; i< 256*256*256 ;i++){
+    // 	rgb_t start = RGB_from_i32(i);
+    // 	rgb_t end = RGB_from_XYZ(XYZ_from_LAB(LAB_from_XYZ(XYZ_from_RGB(start))));
+    // 	if(!rgb_equals(start, end)){
+    // 		different += 1;
+    // 	}
+    // }
 
-    printf("Different pairs detected: %d", different);
+    // printf("Different pairs detected: %d", different);
+
+	rgb_t input1 = (rgb_t){0,0,0};
+	rgb_t input2 = (rgb_t){255,0,255};
+	lab_t input1lab = LAB_from_RGB(input1);
+	lab_t input2lab = LAB_from_RGB(input2);
+
+
+	lab_print(input1lab);
+	lab_print(input2lab);
+    double CIE94_dist = delta_CIE94(input1lab,input2lab);
+    double CIE94_dist2 = delta_CIE94_full(input1lab,input2lab, CIE94_TEXTILES);
+    printf("dist1: %lf dist2: %lf\n", CIE94_dist, CIE94_dist2);
 
 }
