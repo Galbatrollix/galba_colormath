@@ -45,5 +45,15 @@ void HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
 
 
 
+double euclidean(rgb_t color1, rgb_t color2);
+int32_t euclidean_noroot(rgb_t color1, rgb_t color2);
+
+double delta_CIE76(lab_t color1, lab_t color2);
+double delta_CIE94(lab_t color1, lab_t color2);
+double delta_CIEDE2000(lab_t color1, lab_t color2);
+double delta_CMC(lab_t color1, lab_t color2);
+double delta_CMC_extended(lab_t color1, lab_t color2, double lightness, double chroma);
+
+
 
 #endif // GALBA_COLORMATH_H
