@@ -73,20 +73,6 @@ int main(void){
     test_hex_conversion_unusual2();
     test_hex_conversion_unusual3();
 
-    rgb_t input = (rgb_t){5,222,0};	
-
-    lab_t dupa = LAB_from_XYZ(XYZ_from_RGB(input));
-
-    printf("LAB %lf %lf %lf\n", dupa.l, dupa.a, dupa.b);
-    // dupa = xyz2lab(XYZ_from_RGB(input));
-    // printf("%lf %lf %lf\n", dupa.l, dupa.a, dupa.b);
-
-    xyz_t outputxyz = XYZ_from_LAB(dupa);
-    rgb_t output = RGB_from_XYZ(XYZ_from_LAB(dupa));
-
-    printf("XYZ %lf %lf %lf\n", outputxyz.x, outputxyz.y, outputxyz.z);
-    printf("RGB %u %u %u\n", output.r, output.g, output.b);
-
     // int different = 0;
     // for(int i = 0; i< 256*256*256 ;i++){
     // 	rgb_t start = RGB_from_i32(i);
@@ -98,8 +84,8 @@ int main(void){
 
     // printf("Different pairs detected: %d", different);
 
-	rgb_t input1 = (rgb_t){31,122,100};
-	rgb_t input2 = (rgb_t){233,15,245};
+	rgb_t input1 = (rgb_t){0,170,15};
+	rgb_t input2 = (rgb_t){210,130,245};
 	lab_t input1lab = LAB_from_RGB(input1);
 	lab_t input2lab = LAB_from_RGB(input2);
 
@@ -110,5 +96,10 @@ int main(void){
     double CIE94_dist2 = delta_CIE94_t(input1lab,input2lab);
     double CIE94_dist_CLRKTH = Lab_color_difference_CIE94(input1lab, input2lab);
     printf("dist1: %lf dist2: %lf\nclrtk: %lf\n", CIE94_dist, CIE94_dist2, CIE94_dist_CLRKTH);
+
+    double CMC_dist1 = delta_CMC_p(input1lab, input2lab);
+    double CMC_dist2 = delta_CMC_a(input1lab, input2lab);
+    printf("Perceptibility: %lf Acceptability: %lf\n", CMC_dist1, CMC_dist2);
+
 
 }

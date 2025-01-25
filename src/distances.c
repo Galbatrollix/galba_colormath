@@ -82,7 +82,6 @@ static inline double rad_from_deg(double degrees){
 }
 
 
-#define 
 
 double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params){
 	double l_diff = color1.l - color2.l;
@@ -105,17 +104,17 @@ double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params){
 	// environment doesn't fully support IEEE floating point standard that defines atan(0, 0) behavior
 
 	#ifdef __STDC_IEC_559__  // IEEE supported
-		double H = atan2(color1.b / color1.a);
+		double H = atan2(color1.b, color1.a);
 	#else  					 // IEEE not supported
 		// note: the atan2(0,0) result depends on signedness of floating point zeros
 		// however for this purpose simply returning 0 is sufficient
-		double H = (color1.a == 0 && color1.b == 0) ? 0 : atan2(color1.b / color1.a);
+		double H = (color1.a == 0 && color1.b == 0) ? 0 : atan2(color1.b,  color1.a);
 	#endif 					 
 
 	double H1rad = (H >= 0) ? H : H + 2 * M_PI;
 
 	double T;
-	if(164 <= deg_from_rad(H1rad) && deg_from_rad(H1rad) <= 345){
+	if(rad_from_deg(164) <= H1rad && H1rad <= rad_from_deg(345)){
 		T = 0.56 + fabs(0.2 * cos(H1rad + rad_from_deg(168)));
 	}else{
 		T = 0.36 + fabs(0.4 * cos(H1rad + rad_from_deg(35)));
@@ -148,5 +147,5 @@ double delta_CMC_p(lab_t color1, lab_t color2){
 }
 
 double delta_CMC_a(lab_t color1, lab_t color2){
-	return delta_CMC_full(color1, color2, CMC_ACCEPTIBILITY);
+	return delta_CMC_full(color1, color2, CMC_ACCEPTABILITY);
 }
