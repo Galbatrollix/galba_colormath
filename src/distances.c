@@ -33,7 +33,7 @@ double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params){
 	double a_diff = color1.a - color2.a;
 	double b_diff = color1.b - color2.b;
 
-	// sq suffix stands for squared
+	// sq suffix stands for "squared"
 	double deltaLsq = l_diff * l_diff;
 	double deltaAsq = a_diff * a_diff;
 	double deltaBsq = b_diff * b_diff;
@@ -59,7 +59,10 @@ double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params){
 	return result;
 
 }
-double delta_CIE94(lab_t color1, lab_t color2){
+double delta_CIE94_g(lab_t color1, lab_t color2){
 	return delta_CIE94_full(color1, color2, CIE94_GRAPHIC_ARTS);
+}
 
+double delta_CIE94_t(lab_t color1, lab_t color2){
+	return delta_CIE94_full(color1, color2, CIE94_TEXTILES);
 }
