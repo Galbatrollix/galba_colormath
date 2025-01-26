@@ -181,7 +181,6 @@ rgb_t RGB_from_XYZ(xyz_t xyz_input){
 #define LAB_XYZ_k (24389 / 27.0)
 #define LAB_XYZ_k_by_116 (24389/(27.0 * 116))
 
-#define LAB_XYZ_16_by_116 (16.0/116)	
 
 
 //http://www.brucelindbloom.com/index.html?Eqn_Lab_to_XYZ.html
@@ -233,7 +232,7 @@ lab_t LAB_from_XYZ(xyz_t xyz_input){
 		if(ref_xyz[i] > LAB_XYZ_e){
 			fxyz[i] = pow(ref_xyz[i], 1/3.0);
 		}else{
-			fxyz[i] = LAB_XYZ_k_by_116 * ref_xyz[i] + LAB_XYZ_16_by_116;
+			fxyz[i] = LAB_XYZ_k_by_116 * ref_xyz[i] + (16.0 / 116);
 		}
 	}
 

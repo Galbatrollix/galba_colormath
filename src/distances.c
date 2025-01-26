@@ -149,3 +149,36 @@ double delta_CMC_p(lab_t color1, lab_t color2){
 double delta_CMC_a(lab_t color1, lab_t color2){
 	return delta_CMC_full(color1, color2, CMC_ACCEPTABILITY);
 }
+
+// stdlib pow function is twice as slow without -ffast-math and is not particularly more correct than this
+static inline double pow_to_7(double input){
+    return (input * input) * (input * input)  * (input * input )* input;
+}
+
+
+//http://brucelindbloom.com/index.html?Eqn_DeltaE_CIE2000.html
+double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params){
+
+	double C1 = sqrt(color1.a * color1.a + color1.b * color1.b);
+	double C2 = sqrt(color2.a * color2.a + color2.b * color2.b);
+	double meanCx2 = C1 + C2;
+	/*
+	This latex string explains how original formula for G was transformed to simplify computation 
+
+	\sqrt{\dfrac{C^7}{C^7 + 25^7}} ==  \sqrt{\dfrac{X^7}{X^7 + 50^7}} \hspace{0.5 cm} IF \hspace{0.5 cm} X == 2C
+	https://latexeditor.lagrida.com/
+	*/
+
+	double meanCx2to7 = pow_to_7(meanCx2);
+	double G = (1 - sqrt( meanCx2to7 / (meanCx2to7 + pow_to_7(50.0)) )) / 2;
+
+	// p suffix stands for "prime" a1'
+	// double a1p = 
+	// double a2p = 
+
+	return 0;
+}
+
+double delta_CIEDE2000(lab_t color1, lab_t color2){
+	return delta_CIEDE2000_full(color1, color2, CIEDE2000_BASE);
+}
