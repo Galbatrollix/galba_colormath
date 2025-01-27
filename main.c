@@ -19,19 +19,6 @@ static void lab_print(lab_t dupa){
 }
 
 
-double pow_to_7(double input){
-    return (input * input) * (input * input)  * (input * input) * input;
-}
-
-double pow_to_7a(double input){
-    return input * input * input * input  * input * input * input;
-}
-
-double pow_to_7_2(double input){
-    return pow(input, 7.0);
-}
-
-
 #include <time.h>
 #include <stdlib.h>
 int main(void){
@@ -86,48 +73,5 @@ int main(void){
  	printf("Ciede: %lf clrkth:%lf other:%lf\n", CIEDE2000dist, CIEDE2000dist2, CIEDE2000dist3);
 
     // todo check if the formula in return value would be better with (a/(c*d)) ^2
- 	// todo theta stuff
-
-
-	// time_t start,end;
-	// double diff;
-	// double result;
-
-	// time (&start);
-	// result = 0;
-	// for(int i=0; i<1000000000;i++){
-	// 	double val = (double)rand()/ 1000000;
-
-	// 	result += pow_to_7(val);
-	// }
- 	// time (&end);
- 	// printf("%.30lf\n", result);
-  	// diff = difftime (end, start);
-  	// printf("diff: %lf\n", diff);
-
-  	// 	time (&start);
-	// result = 0;
-	// for(int i=0; i<1000000000;i++){
-	// 	double val = (double)rand()/ 1000000;
-
-	// 	result += pow_to_7a(val);
-	// }
- 	// time (&end);
-	//  	printf("%.30lf\n", result);
-  	// diff = difftime (end, start);
-  	// printf("diff: %lf\n", diff);
-
-	// time (&start);
-	// result = 0;
-	// for(int i=0; i<1000000000;i++){
-	// 	double val = (double)rand()/ 1000000;
-
-	// 	result += pow_to_7_2(val);
-	// }
- 	// time (&end);
- 	// printf("%.30lf\n", result);
-  	// diff = difftime (end, start);
-  	// printf("diff: %lf\n", diff);
-  	// return 0;
 
 }
