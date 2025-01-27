@@ -65,10 +65,10 @@ double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params);
 
 
 typedef struct{
-	double lightness, chroma, hue;
+	double KL, KC, KH;
 }CIEDE2000_params;
 
-#define CIEDE2000_BASE ((const CIEDE2000_params){.lightness = 1, .chroma = 1, .hue = 1})
+#define CIEDE2000_BASE ((const CIEDE2000_params){.KL = 1, .KC = 1, .KH = 1})
 
 // equivalent to CIE2000_full with parameter CIEDE2000_BASE
 double delta_CIEDE2000(lab_t color1, lab_t color2);

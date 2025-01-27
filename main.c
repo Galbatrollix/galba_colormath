@@ -18,51 +18,6 @@ static void lab_print(lab_t dupa){
 	printf("LAB(%lf %lf %lf)\n", dupa.l, dupa.a, dupa.b);
 }
 
-double Lab_color_difference_CIE94(lab_t color1, lab_t color2){
-	 double inL1; double ina1; double  inb1; double inL2; double ina2; double  inb2;
-	inL1 = color1.l; inL2 = color2.l;
-	ina1 = color1.a; ina2 = color2.a;
-	inb1 = color1.b; inb2 = color2.b;
-
-	// case Application.GraphicArts:
-		double Kl = 1.0;
-		double K1 = 0.045;
-		double K2 = 0.015;
-	// 	break;
-	// case Application.Textiles:
-	// 	Kl = 2.0;
-	// 	K1 = .048;
-	// 	K2 = .014;
-	// break;
-
-	double deltaL = inL1 - inL2;
-	double deltaA = ina1 - ina2;
-	double deltaB = inb1 - inb2;
-
-	double c1 = sqrt(pow(ina1, 2) + pow(inb1, 2));
-	double c2 = sqrt(pow(ina2, 2) + pow(inb2, 2));
-	double deltaC = c1 - c2;
-
-	double deltaH = pow(deltaA,2) + pow(deltaB,2) - pow(deltaC,2);
-	deltaH = deltaH < 0 ? 0 : sqrt(deltaH);
-
-	const double sl = 1.f;
-	const double kc = 1.f;
-	const double kh = 1.f;
-
-	double sc = 1.f + K1*c1;
-	double sh = 1.f + K2*c1;
-
-	double i = pow(deltaL/(Kl*sl), 2) +
-	                pow(deltaC/(kc*sc), 2) +
-	                pow(deltaH/(kh*sh), 2);
-
-	double finalResult = i < 0 ? 0 : sqrt(i);
-	return (finalResult);
-}
-
-
-
 
 double pow_to_7(double input){
     return (input * input) * (input * input)  * (input * input) * input;
@@ -102,8 +57,12 @@ int main(void){
 
     // printf("Different pairs detected: %d", different);
 
-	rgb_t input1 = (rgb_t){0,170,15};
-	rgb_t input2 = (rgb_t){210,130,245};
+	rgb_t input1 = (rgb_t){0,33,15};
+	rgb_t input2 = (rgb_t){11,51,22};
+
+	input1 = (rgb_t){0,255,15};
+	input2 = (rgb_t){255,51,125};	
+
 	lab_t input1lab = LAB_from_RGB(input1);
 	lab_t input2lab = LAB_from_RGB(input2);
 
@@ -112,55 +71,63 @@ int main(void){
 	lab_print(input2lab);
     double CIE94_dist = delta_CIE94_g(input1lab,input2lab);
     double CIE94_dist2 = delta_CIE94_t(input1lab,input2lab);
-    double CIE94_dist_CLRKTH = Lab_color_difference_CIE94(input1lab, input2lab);
-    printf("dist1: %lf dist2: %lf\nclrtk: %lf\n", CIE94_dist, CIE94_dist2, CIE94_dist_CLRKTH);
+
+    printf("dist1: %lf dist2: %lf\n", CIE94_dist, CIE94_dist2);
 
     double CMC_dist1 = delta_CMC_p(input1lab, input2lab);
     double CMC_dist2 = delta_CMC_a(input1lab, input2lab);
     printf("Perceptibility: %lf Acceptability: %lf\n", CMC_dist1, CMC_dist2);
 
-    // todo check if fabs call is neccessary
+
+    double CIEDE2000dist = delta_CIEDE2000(input1lab, input2lab);
+    double CIEDE2000dist2 = Lab_color_difference_CIEDE2000(input1lab, input2lab);
+    double CIEDE2000dist3 = ciede2000(input1lab, input2lab);
+
+ 	printf("Ciede: %lf clrkth:%lf other:%lf\n", CIEDE2000dist, CIEDE2000dist2, CIEDE2000dist3);
+
+    // todo check if the formula in return value would be better with (a/(c*d)) ^2
+ 	// todo theta stuff
 
 
-	time_t start,end;
-	double diff;
-	double result;
+	// time_t start,end;
+	// double diff;
+	// double result;
 
-	time (&start);
-	result = 0;
-	for(int i=0; i<1000000000;i++){
-		double val = (double)rand()/ 1000000;
+	// time (&start);
+	// result = 0;
+	// for(int i=0; i<1000000000;i++){
+	// 	double val = (double)rand()/ 1000000;
 
-		result += pow_to_7(val);
-	}
- 	time (&end);
- 	printf("%.30lf\n", result);
-  	diff = difftime (end, start);
-  	printf("diff: %lf\n", diff);
+	// 	result += pow_to_7(val);
+	// }
+ 	// time (&end);
+ 	// printf("%.30lf\n", result);
+  	// diff = difftime (end, start);
+  	// printf("diff: %lf\n", diff);
 
-  		time (&start);
-	result = 0;
-	for(int i=0; i<1000000000;i++){
-		double val = (double)rand()/ 1000000;
+  	// 	time (&start);
+	// result = 0;
+	// for(int i=0; i<1000000000;i++){
+	// 	double val = (double)rand()/ 1000000;
 
-		result += pow_to_7a(val);
-	}
- 	time (&end);
-	 	printf("%.30lf\n", result);
-  	diff = difftime (end, start);
-  	printf("diff: %lf\n", diff);
+	// 	result += pow_to_7a(val);
+	// }
+ 	// time (&end);
+	//  	printf("%.30lf\n", result);
+  	// diff = difftime (end, start);
+  	// printf("diff: %lf\n", diff);
 
-	time (&start);
-	result = 0;
-	for(int i=0; i<1000000000;i++){
-		double val = (double)rand()/ 1000000;
+	// time (&start);
+	// result = 0;
+	// for(int i=0; i<1000000000;i++){
+	// 	double val = (double)rand()/ 1000000;
 
-		result += pow_to_7_2(val);
-	}
- 	time (&end);
- 	printf("%.30lf\n", result);
-  	diff = difftime (end, start);
-  	printf("diff: %lf\n", diff);
-  	return 0;
+	// 	result += pow_to_7_2(val);
+	// }
+ 	// time (&end);
+ 	// printf("%.30lf\n", result);
+  	// diff = difftime (end, start);
+  	// printf("diff: %lf\n", diff);
+  	// return 0;
 
 }
