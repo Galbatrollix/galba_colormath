@@ -50,9 +50,18 @@ int main(void){
 	input1 = (rgb_t){0,255,15};
 	input2 = (rgb_t){255,51,125};	
 
-	lab_t input1lab = LAB_from_RGB(input1);
+    input1 = (rgb_t){255,255,254};
+    input2 = (rgb_t){255,255,255};   
+
+	lab_t input1lab = LAB_from_RGB(input1);    
 	lab_t input2lab = LAB_from_RGB(input2);
 
+    // input1lab = (lab_t){
+    //     99.9751541, -0.1694255, 0.465877863506425
+    // };
+    // input2lab = (lab_t){
+    //     100, 0.005260499, -0.0104081845252
+    // };
 
 	lab_print(input1lab);
 	lab_print(input2lab);
@@ -67,11 +76,21 @@ int main(void){
 
 
     double CIEDE2000dist = delta_CIEDE2000(input1lab, input2lab);
-    double CIEDE2000dist2 = Lab_color_difference_CIEDE2000(input1lab, input2lab);
-    double CIEDE2000dist3 = ciede2000(input1lab, input2lab);
 
- 	printf("Ciede: %lf clrkth:%lf other:%lf\n", CIEDE2000dist, CIEDE2000dist2, CIEDE2000dist3);
+ 	printf("Ciede: %.20lf\n", CIEDE2000dist);
 
-    // todo check if the formula in return value would be better with (a/(c*d)) ^2
-
+    test_CIEDE2000_premade_data();
 }
+
+
+//todo
+//investigate their test data
+//https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/
+
+//todo investigate colors.io
+//https://www.programiz.com/online-compiler/2DMVlGy5M0uo4
+
+//https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+//https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+
+//https://godbolt.org/z/s8foMezKr

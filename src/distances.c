@@ -10,14 +10,6 @@ double euclid_dist(rgb_t color1, rgb_t color2){
 
 	return sqrt(r_diff * r_diff + g_diff * g_diff + b_diff * b_diff);
 }
-double euclid_dist_noroot(rgb_t color1, rgb_t color2){
-	double r_diff = (double)color1.r - color2.r;
-	double g_diff = (double)color1.g - color2.g;
-	double b_diff = (double)color1.b - color2.b;
-
-	return r_diff * r_diff + g_diff * g_diff + b_diff * b_diff;
-}
-
 
 double delta_CIE76(lab_t color1, lab_t color2){
 	double l_diff = color1.l - color2.l;
@@ -132,9 +124,9 @@ double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params){
 	}
 
 	double result = sqrt(
-		deltaLsq / (params.lightness * params.lightness * SL * SL)
+		deltaLsq / (params.KL * params.KL * SL * SL)
 		+
-		deltaCsq / (params.chroma * params.chroma * SC * SC)
+		deltaCsq / (params.KC * params.KC * SC * SC)
 		+
 		deltaHsq / (SH * SH)
 	);
@@ -155,7 +147,7 @@ static inline double pow_to_7(double input){
     return (input * input) * (input * input)  * (input * input )* input;
 }
 
-
+#include <stdio.h>
 
 //http://brucelindbloom.com/index.html?Eqn_DeltaE_CIE2000.html
 double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params){
@@ -180,10 +172,10 @@ double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params)
 
 
 	// Conditional compilation, read more in delta CMC function implementation
-	#ifdef __STDC_IEC_559__  // IEEE supported
+	#ifdef __STDC_IEC_559__  			// IEEE supported
 		double h1_atan = atan2(color1.b, a1p);
 		double h2_atan = atan2(color2.b, a2p);
-	#else  					 // IEEE not supported
+	#else  					 			// IEEE not supported
 		double h1_atan = (a1p == 0 && color1.b == 0) ? 0 : atan2(color1.b, a1p);
 		double h2_atan = (a2p == 0 && color2.b == 0) ? 0 : atan2(color2.b, a2p);
 	#endif 		
