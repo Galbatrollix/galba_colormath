@@ -5,8 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
-#define CIEDE2000_TEST_COUNT 35
+#define CIEDE2000_TEST_COUNT 39
 
 // Test values taken from:
 //https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/
@@ -48,10 +49,15 @@ const lab_t CIEDE2000_TEST_INPUTS[CIEDE2000_TEST_COUNT][2] = {
 	{{90.9257, -0.5406, -0.9208}, { 88.6381, -0.8985, -0.7239}},
 	{{6.7747, -0.2908, -2.4247}, { 5.8714, -0.0985, -2.2286}},
 	{{2.0776, 0.0795, -1.1350}, { 0.9033, -0.0636, -0.5514}},
-	
+
 	//  hand picked and cross referenced with websites, including color.js implementation
 	{{99.9751541, -0.1694255, 0.465877863506425},{ 100, 0.005260499, -0.0104081845252}},
 
+	//{{0,0,0},{0,0,0}},
+	{{99.9751541, -0.1694255, 0.465877863506425},{ 100, 0.005260499, -0.0104081845252}},
+	{{99.9751541, -0.1694255, 0.465877863506425},{ 100, 0.005260499, -0.0104081845252}},
+	{{99.9751541, -0.1694255, 0.465877863506425},{ 100, 0.005260499, -0.0104081845252}},
+	{{99.9751541, -0.1694255, 0.465877863506425},{ 100, 0.005260499, -0.0104081845252}},
 };
 
 const double CIEDE2000_TEST_EXPECTED[CIEDE2000_TEST_COUNT] = {
@@ -60,7 +66,7 @@ const double CIEDE2000_TEST_EXPECTED[CIEDE2000_TEST_COUNT] = {
 	27.1492, 22.8977, 31.9030, 19.4535, 1.0000, 1.0000, 1.0000, 1.0000, 
 	1.2644, 1.2630, 1.8731, 1.8645, 2.0373, 1.4146, 1.4441, 1.5381, 0.6377, 0.9082,
 
-	0.537679
+	0.537679,0.537679,0.537679,0.537679,0.537679,
 };
 
 
@@ -68,19 +74,35 @@ static double round_to_n_digits(double x, unsigned int digits) {
     double fac = pow(10, digits);
     return round(x* fac)/ fac;
 }
+static void print_lab(lab_t p){
+    printf("lab(%lf %lf %lf)", p.l, p.a, p.b);
+}
 
 bool test_CIEDE2000_premade_data(void){
 
 	for(int i=0;i<CIEDE2000_TEST_COUNT;i++){
 		double expected = CIEDE2000_TEST_EXPECTED[i];
 		double calculated = delta_CIEDE2000(CIEDE2000_TEST_INPUTS[i][0], CIEDE2000_TEST_INPUTS[i][1]);
+		double calculated_swap = delta_CIEDE2000(CIEDE2000_TEST_INPUTS[i][1], CIEDE2000_TEST_INPUTS[i][0]);
+
 		expected = round_to_n_digits(expected, 4);
 		calculated = round_to_n_digits(calculated, 4);
+		calculated_swap = round_to_n_digits(calculated_swap, 4);
 
-		printf("%s\n", expected == calculated ? "SUCCESS" : "FAILURE");
+		// yes, comparing floats for equality IS DEFINED and PERFECTLY fine. 
+		// In this case numbers are rounded in the same way so they are eihter identical or the function returns incorrectly
+		bool correct =  expected == calculated && calculated == calculated_swap;
+		if(! correct){
+			printf("Test test_CIEDE2000_premade_data FAILED at:\n");
+			print_lab(CIEDE2000_TEST_INPUTS[i][0]);
+			printf(", ");
+			print_lab(CIEDE2000_TEST_INPUTS[i][1]);
+			printf("\n");
 
-		// printf("%.10lf\n", expected);
-		// printf("%.10lf\n\n", calculated);
+			printf("Expected: %.4lf, calculated: %.4lf, calculated with arguments swapped: %.4lf\n", 
+														expected, calculated, calculated_swap);
+			return false;
+		}
 
 	}
 
