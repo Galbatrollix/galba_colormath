@@ -45,45 +45,14 @@ int main(void){
     // 	}
     // }
 
-    // printf("Different pairs detected: %d", different);
-
-	rgb_t input1 = (rgb_t){0,33,15};
-	rgb_t input2 = (rgb_t){11,51,22};
-
-	input1 = (rgb_t){0,255,15};
-	input2 = (rgb_t){255,51,125};	
-
-    input1 = (rgb_t){255,255,254};
-    input2 = (rgb_t){255,255,255};   
-
-	lab_t input1lab = LAB_from_RGB(input1);    
-	lab_t input2lab = LAB_from_RGB(input2);
-
-    // input1lab = (lab_t){
-    //     99.9751541, -0.1694255, 0.465877863506425
-    // };
-    // input2lab = (lab_t){
-    //     100, 0.005260499, -0.0104081845252
-    // };
-
-	lab_print(input1lab);
-	lab_print(input2lab);
-    double CIE94_dist = delta_CIE94_g(input1lab,input2lab);
-    double CIE94_dist2 = delta_CIE94_t(input1lab,input2lab);
-
-    printf("dist1: %lf dist2: %lf\n", CIE94_dist, CIE94_dist2);
-
-    double CMC_dist1 = delta_CMC_p(input1lab, input2lab);
-    double CMC_dist2 = delta_CMC_a(input1lab, input2lab);
-    printf("Perceptibility: %lf Acceptability: %lf\n", CMC_dist1, CMC_dist2);
-
-
-    double CIEDE2000dist = delta_CIEDE2000(input1lab, input2lab);
-
- 	printf("Ciede: %.20lf\n", CIEDE2000dist);
 
     test_CIEDE2000_premade_data();
     test_CIEDE2000_params_nondefault();
+
+    test_CMC_params_2_1();
+    test_CMC_params_1_1();
+
+    test_CIE94_base();
 }
 
 

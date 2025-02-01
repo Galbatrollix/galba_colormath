@@ -85,7 +85,8 @@ double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params){
 	double deltaAsq = a_diff * a_diff;
 	double deltaBsq = b_diff * b_diff;
 
-	double C1 = sqrt(color1.a * color1.a + color1.b * color1.b);
+	double C1sq = color1.a * color1.a + color1.b * color1.b;
+	double C1 = sqrt(C1sq);
 	double C2 = sqrt(color2.a * color2.a + color2.b * color2.b);
 
 	double deltaCsq = (C1 - C2) * (C1 - C2);
@@ -113,7 +114,7 @@ double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params){
 	}
 
 
-	double F  = sqrt((C1 * C1 * C1 * C1) / (1900 + C1 * C1 * C1 * C1));
+	double F  = sqrt((C1sq * C1sq) / (1900 + C1sq * C1sq));
 	double SC = (0.0638 * C1) / (1 + 0.0131 * C1) + 0.638;
 	double SH = SC * (F * T + 1 - F);
 	double SL;
