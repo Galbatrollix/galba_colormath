@@ -23,7 +23,7 @@ bool test_hex_conversion_unusual3(void);
 // color distance tests
 
 bool test_CIEDE2000_premade_data(void);
-
+bool test_CIEDE2000_params_nondefault(void);
 
 
 #endif //GALBA_COLORMATH_TEST

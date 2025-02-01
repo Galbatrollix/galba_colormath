@@ -1,13 +1,16 @@
 
-#include <stdio.h>
-#include "tests.h"
 #include "galba_colormath.h"
+#include "tests.h"
+
+
+#include <stdio.h>
+#include <math.h>
+
+
 
 static void print_rgb(rgb_t p){
     printf("%u %u %u\n", p.r, p.g, p.b);
 }
-
-#include <math.h>
 
 
 static bool rgb_equals(rgb_t l, rgb_t r){
@@ -80,6 +83,7 @@ int main(void){
  	printf("Ciede: %.20lf\n", CIEDE2000dist);
 
     test_CIEDE2000_premade_data();
+    test_CIEDE2000_params_nondefault();
 }
 
 

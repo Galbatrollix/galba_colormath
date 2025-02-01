@@ -224,7 +224,9 @@ double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params)
 
 	// (x/2 - 50)^2 == 1/4 * (x- 100)^2 ------> therefore ------> (meanL' - 50)^2 == 1/4 * (2 * meanL - 100)^2
 	double Sl = 1 + (
-		0.00375 * (meanLpx2 - 100) * (meanLpx2 - 100) / sqrt(20 + 0.25 * (meanLpx2 - 100) * (meanLpx2 - 100))
+		0.00375 * (meanLpx2 - 100) * (meanLpx2 - 100) 
+		/ 
+		sqrt(20 + 0.25 * (meanLpx2 - 100) * (meanLpx2 - 100))
 	);
 
 
@@ -243,6 +245,8 @@ double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params)
 
 	double Rt = -Rc * sin(2 * deltaTheta);
 
+	// consider rearranging the equation once all test cases are created
+	// drop it to godbolt and see if the alternative form can skip some cycles
 	double result = sqrt(
 		deltaLp * deltaLp / (params.KL * params.KL * Sl * Sl)
 		+ 
