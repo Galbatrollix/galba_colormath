@@ -31,8 +31,17 @@ bool test_CMC_params_2_1(void);
 bool test_CMC_params_1_1(void);
 
 bool test_CIE94_base(void);
-bool test_CIE94_params(void);
 
 
+// color conversion tests
+
+bool test_RGB_LAB_roundtrip(void);
+bool test_XYZ_LAB_roundtrip(void);
+bool test_LAB_XYZ_roundtrip(void);
+
+
+bool test_premade_XYZ_LAB(void);
+bool test_premade_LAB_XYZ(void);
+bool test_premade_XYZ_RGB(void);
 
 #endif //GALBA_COLORMATH_TEST
