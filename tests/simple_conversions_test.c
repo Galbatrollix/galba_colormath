@@ -63,6 +63,7 @@ bool test_i32_rgb_conversion2(void){
 	do{
 		number += 1;
 
+		// inner uint32_t cast is necessary otherwise shifting 255 by 24 in a signed 32 integer will cause UB
 		int32_t most_significant_byte_mask = (int32_t)((uint32_t)0xFF << (8 * 3));
 		rgb_t rgb_last_3_bytes = RGB_from_i32(number & ~most_significant_byte_mask);
 		rgb_t rgb_normal = RGB_from_i32(number);
