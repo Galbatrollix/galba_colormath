@@ -3,6 +3,6 @@ Galba colormath is a lightweight C language library for color conversions and di
 
 The repository also contains a test suite for almost all defined functions. (Some extremely simple functions are omitted) More details on the test suite (link this) here.
 
-## Language version and dependencies
-Galba colormath is written in a C99 style and doesn't use specific compiler extensions. Hence the code should compile correctly with any C99 (or later) conformant compiler. The only dependencies in the library is libc. Details on required libc includes and functions can be found (link this) here.
+### Language version and dependencies
+Galba colormath is written in a C99 style and doesn't use specific compiler extensions. Hence the code should compile correctly with any C99 (or later) conformant compiler. The only dependency in the library is C standard library. Details on required libc includes and functions can be found (link this) here.
 
