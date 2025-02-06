@@ -31,7 +31,7 @@ int32_t i32_from_RGB(rgb_t rgb_input){
 
 */
 
-static unsigned char hex_letter_to_right_halfbyte(unsigned char letter){
+static char hex_letter_to_right_halfbyte(char letter){
 	if(letter <= '9' && letter >= '0'){
 		return letter - '0';
 	}
@@ -45,7 +45,7 @@ static unsigned char hex_letter_to_right_halfbyte(unsigned char letter){
 
 }
 
-static char right_halfbyte_to_hex_letter(unsigned char halfbyte){
+static char right_halfbyte_to_hex_letter(char halfbyte){
 	static const char lookup[17] = "0123456789ABCDEF";
 	// unsafe, be sure this function is called with halfbyte no larger than 15.
 	return lookup[halfbyte]; 
@@ -56,7 +56,7 @@ int32_t i32_from_HEX(const char hex_arr[6]){
 	int32_t int_repr = 0;
 
 	for(int i=0; i<6; i++){
-		unsigned char halfbyte = hex_letter_to_right_halfbyte(hex_arr[i]);
+		char halfbyte = hex_letter_to_right_halfbyte(hex_arr[i]);
 
 		int_repr <<= 4;
 		int_repr += halfbyte;
@@ -65,7 +65,7 @@ int32_t i32_from_HEX(const char hex_arr[6]){
 }
 void HEX_from_i32(char arr_buffer[6], int32_t int_repr){
 	for(int i=0; i<6; i++){
-	    unsigned char halfbyte = (int_repr >> (4 * i)) & 0x0F;
+	    char halfbyte = (int_repr >> (4 * i)) & 0x0F;
 		arr_buffer[5 - i] = right_halfbyte_to_hex_letter(halfbyte);
 	}
 }

@@ -8,9 +8,6 @@
 
 
 
-
-
-
 #define TEST_COUNT 21
 bool (*test_functions[TEST_COUNT])(void) = {
     test_i32_rgb_conversion1,
@@ -51,20 +48,10 @@ int main(void){
 
     }
 
-    printf("All tests completed.\nSuccessful tests: %d/%d", tests_succeeded, TEST_COUNT);
+    printf("All tests completed.\nSuccessful tests: %d/%d\n", tests_succeeded, TEST_COUNT);
 
 }
 
-
-//todo
-//investigate their test data
-//https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/
-
-//todo investigate colors.io
-//https://www.programiz.com/online-compiler/2DMVlGy5M0uo4
-
-//https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-//https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
 
 //https://godbolt.org/z/s8foMezKr
 

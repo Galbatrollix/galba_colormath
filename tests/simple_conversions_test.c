@@ -63,7 +63,7 @@ bool test_i32_rgb_conversion2(void){
 	do{
 		number += 1;
 
-		int32_t most_significant_byte_mask = (int32_t)0xFF << (8 * 3);
+		int32_t most_significant_byte_mask = (int32_t)((uint32_t)0xFF << (8 * 3));
 		rgb_t rgb_last_3_bytes = RGB_from_i32(number & ~most_significant_byte_mask);
 		rgb_t rgb_normal = RGB_from_i32(number);
 		if(! rgb_equals(rgb_normal, rgb_last_3_bytes)){	
@@ -75,7 +75,7 @@ bool test_i32_rgb_conversion2(void){
 
 
 	for(number = INT32_MIN; number<0; number++){
-		int32_t most_significant_byte_mask = (int32_t)0xFF << (8 * 3);
+		int32_t most_significant_byte_mask = (int32_t)((uint32_t)0xFF << (8 * 3));
 		rgb_t rgb_last_3_bytes = RGB_from_i32(number & ~most_significant_byte_mask);
 		rgb_t rgb_normal = RGB_from_i32(number);
 		if(! rgb_equals(rgb_normal, rgb_last_3_bytes)){	

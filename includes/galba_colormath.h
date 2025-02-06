@@ -3,15 +3,15 @@
 
 #include <stdint.h>
 
-typedef struct RGB{
+typedef struct rgb_t{
 	unsigned char r, g, b;
 }rgb_t;
 
-typedef struct LAB{
+typedef struct lab_t{
 	double l, a, b;
 }lab_t;
 
-typedef struct XYZ{
+typedef struct xyz_t{
 	double x, y, z;
 }xyz_t;
 
