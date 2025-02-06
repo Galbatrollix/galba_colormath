@@ -14,6 +14,6 @@ Once the galba colormath files have been placed in the project and are visible t
 ### Running tests 
 The repository also contains a test suite for almost all defined functions. (Some extremely simple functions are omitted) More details on the test suite (link this) here. 
 
-All test-related files in the repository are located in ```tests``` folder. Using them follows the same logic as using the library itself. However, repository comes with convinience ```main.c``` file at the root level that runs the complete test suite. 
+All test-related files in the repository are located in ```tests``` folder. Using them follows the same logic as using the library itself. However, repository comes with a ```main.c``` file at the root level that runs the complete test suite. 
 
-There is also a convinience ```makefile``` at root directory which allows to quickly run tests on either mingw GCC or linux GCC directly from the repository project structure. (TODO EXACT COMMAND TO EXECUTE ON LINUX AND ON MINGW)  
+There is also a convinience ```makefile``` at root directory which allows to quickly run the ```main.c``` file on either mingw GCC or linux GCC directly from the repository project structure. (TODO EXACT COMMAND TO EXECUTE ON LINUX AND ON MINGW)  
