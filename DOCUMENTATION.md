@@ -1,7 +1,7 @@
 # Galba Colormath Documentation
 ## Overwiew
 Galba Colormath library contains a single header - ```galba_colormath.h```. This header defines structures and functions for three main purposes: 
-- Decoding and encoding RGB in various formats [here](###rgb-encoding-related-functions)
+- Decoding and encoding RGB in various formats [here](#rgb-encoding-related-functions)
 - Conversion between sRGB, XYZ and Lab color spaces
 - Calculating color distances
   
