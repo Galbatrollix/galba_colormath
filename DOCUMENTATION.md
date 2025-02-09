@@ -8,6 +8,7 @@
 ### Installation
 
 ## Structure definitions
+#### struct rgb_t
 
 ## Define macros
 
