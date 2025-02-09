@@ -10,8 +10,29 @@ The header offers functions for each of these tasks. This file provides descript
 #### C version
 Galba color math is written in style conformant to C99 standard specification and as of writing this (February 2025) doesn't use any deprecated features according to the latest C standard. This means that the provided code should compile without any issues on any C99 conformant or later C compiler. 
 #### C++ compatibility
-Since this library makes use of C-specific features such as compound literals, it is not strictly C++ conformant. It is advised to compile galba colormath files with a C compiler and link them to C++ programs with use of ```extern "C" ``` directive. However, it's worth to note that g++ compiler can successfully compile galba colormath, thanks to compiler extension. Read more [here](https://gcc.gnu.org/onlinedocs/gcc/Compound-Literals.html). 
+Since this library makes use of C-specific features such as compound literals, it is not strictly C++ conformant. It is advised to compile galba colormath files with a C compiler and link them to C++ programs with use of ```extern "C"``` directive. However, it's worth to note that g++ compiler can successfully compile galba colormath, thanks to compiler extension. Read more [here](https://gcc.gnu.org/onlinedocs/gcc/Compound-Literals.html). 
 ### Dependencies
+The only dependency of the galba colormath is the C standard library. 
+The exhaustive list of necessary libc headers and their used contents is:
+- math.h
+    - pow, sqrt, fabs, atan2, cos, sin, exp (functions)
+- stdint.h
+    - int32_t (type)
+
+Stdint.h is included inside the header, math.h is only used by source files. 
+
+Additionally, test suite requies the following headers and their contents: 
+- stdbool.h
+- math.h
+    - round (function)
+- stdint.h
+    - int32_t, uint32_t (types)
+- inttypes.h
+    - PRId32 (macro)
+- string.h
+    - memcpy, memset (functions)
+- stdio.h
+    - printf, puts, putchar (functions)
 
 ### Installation
 
