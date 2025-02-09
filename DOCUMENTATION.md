@@ -122,7 +122,43 @@ Currently there are five pre-made parameter struct literals, defined as the foll
 ## Functions
 
 ### RGB encoding-related functions
+The purpose of functions below is to help user conviniently convert between ```struct rgb_t```, integer-encoded RGB and hex-string-encoded RGB.
+#### Integer encoding
+Galba colormath allows encoding RGB data in ```int32_t``` values. The format is as follows:\
+```0xXXRRGGBB```\
+Where RR, GG, BB are bytes encoding a value between 0 and 255 for color channels R, G, B respectively.\
+XX denotes unused bytes. Usually best set to 0, however library will accept any value for XX byte and ignore it.\
+Example:
+```c
+int32_t color = 0x00FF0000;  // represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
+```
 
+#### Hex strings
+Galba colormath also allows to work with hex strings. Conventionally formed hex color strings of forms "rrggbb" or "RRGGBB" both upper and lowercase letters are accepted and can be mixed in a single string. Usually present "#" character is not required. More details on "#" and null terminator requirements can be read in the following section.\
+Example:
+```c
+char color[7] = "fF0000";  // represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
+```
+#### Encoding conversion functions
+The header declares the following 6 functions that allow to convert from each of the three encodings (int32_t, string and rgb_t struct) to any of the remaining two.
+```c
+rgb_t RGB_from_i32(int32_t int_repr);
+int32_t i32_from_RGB(rgb_t rgb_input);
+
+int32_t i32_from_HEX(const char hex_arr[6]);
+void HEX_from_i32(char arr_buffer[6], int32_t int_repr);
+
+rgb_t RGB_from_HEX(const char hex_arr[6]);
+void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input);
+```
+##### RGB_from_i32
+This function takes int32_t and interprets it as a RGB-encoding integer according to aforementioned rules. First byte is ignored and 2nd, 3rd and 4th bytes are interpreted as channels R, G, B respectively. 
+
+Additionally, two more functions are offered to the user as a convinience tool.
+```c
+void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input);
+void HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
+```
 ### Colorspace conversion functions
 
 ### Color distance functions
