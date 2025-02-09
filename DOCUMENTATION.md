@@ -34,8 +34,13 @@ Additionally, test suite requies the following headers and their contents:
 - stdio.h
     - printf, puts, putchar (functions)
 
-### Installation
-
+### Headscratchers
+1) Is the code thread-safe?
+    - Yes
+2) Is the code strict-aliasing-safe?
+    - Yes, the code should produce correct results when compiled with optimization level of O3 on gcc. It doesn't rely on dodgy pointer/union casts in any of the provided functions.
+3) Can this code be compiled with -fast math option using gcc?
+    - Yes, but it was not developed with this assumption in mind, make sure it passes the tests if you try compiling with mast math enabled
 ## Structure definitions
 
 ## Define macros
