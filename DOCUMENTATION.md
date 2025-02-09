@@ -42,7 +42,51 @@ Additionally, test suite requies the following headers and their contents:
 3) Can this code be compiled with -fast math option using gcc?
     - Yes, but it was not developed with this assumption in mind, make sure it passes the tests if you try compiling with mast math enabled
 ## Structure definitions
+### Color structs
+The header defines 3 separate structures for dealing with color math and conversions. All colorspace and color distance related functions in the library operate on these types.
 
+The color structures are the following: 
+```c
+typedef struct rgb_t{
+	unsigned char r, g, b;
+}rgb_t;
+
+typedef struct lab_t{
+	double l, a, b;
+}lab_t;
+
+typedef struct xyz_t{
+	double x, y, z;
+}xyz_t;
+```
+***
+```struct rgb_t``` denotes an instance of color in sRGB color space. 
+All possible value combinations of struct rgb_t members are valid. 
+
+Example:
+```(rgb_t){.r = 0, .g = 0, .b = 0}``` is a rgb_t value for color black.
+```(rgb_t){.r = 255, .g = 255, .b = 255}``` is a rgb_t value for color white.
+***
+
+```struct xyz_t``` denotes an instance of color in XYZ color space with D65 white reference point. 
+Each channel is represented as percentage, so in short: range is 0.0 - 100.0 (%), not 0.0 - 1.0.
+
+In practice, channels can sometimes slightly exceed the given range, but as long as the value is not nonsensical (for example 108.9, instead of 0.3E21), then the other functions in this header will process it and yield expected results. 
+
+Example:
+```(xyz_t){.x = 86.5, .y = 52.311, .z = 100.001}``` is a xyz_t value for color pink.
+***
+
+```struct lab_t``` denotes an instance of color in Lab color space with D65 white reference point. \
+l channel is in range of 0.0 - 100.0.\
+a and b channels are in range -125.0, 125.0
+
+Similarly as in xyz_t, values slightly outside of range won't shouldn't cause significant errors. 
+
+Example:
+```(lab_t){.l = 100.0, .a = -125.01, .b = 124.99}``` is a lab_t value for color cyan.
+
+### Distance params
 ## Define macros
 
 ## Functions
@@ -52,6 +96,8 @@ Additionally, test suite requies the following headers and their contents:
 ### Colorspace conversion functions
 
 ### Color distance functions
+
+## Use examples
 
 ## Test suite
 
