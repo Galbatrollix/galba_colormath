@@ -63,8 +63,8 @@ typedef struct xyz_t{
 ```struct rgb_t``` denotes an instance of color in sRGB color space. 
 All possible value combinations of struct rgb_t members are valid. 
 
-Example:
-```(rgb_t){.r = 0, .g = 0, .b = 0}``` is a rgb_t value for color black.
+Example: \
+```(rgb_t){.r = 0, .g = 0, .b = 0}``` is a rgb_t value for color black.\
 ```(rgb_t){.r = 255, .g = 255, .b = 255}``` is a rgb_t value for color white.
 ***
 
@@ -73,7 +73,7 @@ Each channel is represented as percentage, so in short: range is 0.0 - 100.0 (%)
 
 In practice, channels can sometimes slightly exceed the given range, but as long as the value is not nonsensical (for example 108.9, instead of 0.3E21), then the other functions in this header will process it and yield expected results. 
 
-Example:
+Example:\
 ```(xyz_t){.x = 86.5, .y = 52.311, .z = 100.001}``` is a xyz_t value for color pink.
 ***
 
@@ -83,7 +83,7 @@ a and b channels are in range -125.0, 125.0
 
 Similarly as in xyz_t, values slightly outside of range won't shouldn't cause significant errors. 
 
-Example:
+Example:\
 ```(lab_t){.l = 100.0, .a = -125.01, .b = 124.99}``` is a lab_t value for color cyan.
 
 ### Distance params
