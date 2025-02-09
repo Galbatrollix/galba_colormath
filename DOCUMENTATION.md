@@ -59,25 +59,27 @@ typedef struct xyz_t{
 	double x, y, z;
 }xyz_t;
 ```
-***
-```struct rgb_t``` denotes an instance of color in sRGB color space. 
+##### struct rgb_t 
+Denotes an instance of color in sRGB color space. 
 All possible value combinations of struct rgb_t members are valid. 
 
 Example: \
 ```(rgb_t){.r = 0, .g = 0, .b = 0}``` is a rgb_t value for color black.\
 ```(rgb_t){.r = 255, .g = 255, .b = 255}``` is a rgb_t value for color white.
-***
 
-```struct xyz_t``` denotes an instance of color in XYZ color space with D65 white reference point. 
+
+##### struct xyz_t
+Denotes an instance of color in XYZ color space with D65 white reference point. 
 Each channel is represented as percentage, so in short: range is 0.0 - 100.0 (%), not 0.0 - 1.0.
 
 In practice, channels can sometimes slightly exceed the given range, but as long as the value is not nonsensical (for example 108.9, instead of 0.3E21), then the other functions in this header will process it and yield expected results. 
 
 Example:\
 ```(xyz_t){.x = 86.5, .y = 52.311, .z = 100.001}``` is a xyz_t value for color pink.
-***
 
-```struct lab_t``` denotes an instance of color in Lab color space with D65 white reference point. \
+
+##### struct lab_t
+Denotes an instance of color in Lab color space with D65 white reference point. \
 l channel is in range of 0.0 - 100.0.\
 a and b channels are in range -125.0, 125.0
 
@@ -130,14 +132,16 @@ Where RR, GG, BB are bytes encoding a value between 0 and 255 for color channels
 XX denotes unused bytes. Usually best set to 0, however library will accept any value for XX byte and ignore it.\
 Example:
 ```c
-int32_t color = 0x00FF0000;  // represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
+int32_t color = 0x00FF0000;
+// represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
 ```
 
 #### Hex strings
 Galba colormath also allows to work with hex strings. Conventionally formed hex color strings of forms "rrggbb" or "RRGGBB" both upper and lowercase letters are accepted and can be mixed in a single string. Usually present "#" character is not required. More details on "#" and null terminator requirements can be read in the following section.\
 Example:
 ```c
-char color[7] = "fF0000";  // represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
+char color[7] = "fF0000";
+// represents the same color as (rgb_t){.r = 255, .g = 0, .b = 0}
 ```
 #### Encoding conversion functions
 The header declares the following 6 functions that allow to convert from each of the three encodings (int32_t, string and rgb_t struct) to any of the remaining two.
@@ -152,7 +156,34 @@ rgb_t RGB_from_HEX(const char hex_arr[6]);
 void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input);
 ```
 ##### RGB_from_i32
-This function takes int32_t and interprets it as a RGB-encoding integer according to aforementioned rules. First byte is ignored and 2nd, 3rd and 4th bytes are interpreted as channels R, G, B respectively. 
+This function takes int32_t and interprets it as a RGB-encoding integer according to aforementioned rules.\
+First byte is ignored and 2nd, 3rd and 4th bytes are interpreted as channels R, G, B respectively. 
+
+##### i32_from_RGB
+This function takes struct rgb_t and returns the same color encoded as int32_t.\
+First byte of resulting value is always 0. 
+
+##### i32_from_HEX
+This function takes constant char pointer pointing to the first element of hex string and returns the same color in the int32_t representation. 
+
+
+Char pointer must be a valid (not NULL) pointer to a memory with at least 6 accessible bytes. The provided memory doesn't need to be a null-terminated string, however it must be at least 6 bytes long, regardless of array contents. (Function doesn't consider null terminators and always reads exactly 6 bytes to produce the output)\
+Attempting to use the function with NULL pointer will cause a null pointer dereference error. Similarly, providing the function with pointer with less than 6 bytes of available memory will cause a buffer over-read error.
+```c
+int32_t color1 = i32_from_HEX("ABC");  				   // WRONG, buffer overread
+int32_t color2 = i32_from_HEX((char[6]){'a','b','c','d','e','f'}); // OK, result = 0x00ABCDEF
+```
+The pointer should contain an address of first meaningful character of hexstring - in other words for string ```"#abFfcC"``` the ```hex_arr``` pointer should point to 'a' character, not to '#' character.
+If provided hex string contains invalid characters (for example: '\0', '\n', 'R', etc.), then these characters will be interpreted as 0.
+```c
+const char hex_color[] = "#AABBCC";
+int32_t color1 = i32_from_HEX(hex_color);  // WRONG, result = 0x000AABBC
+int32_t color2 = i32_from_HEX(hex_color + 1); // OK, result = 0x00AABBCC
+```
+First byte of resulting value is always 0. 
+
+##### HEX_from_i32
+
 
 Additionally, two more functions are offered to the user as a convinience tool.
 ```c
