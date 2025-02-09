@@ -87,8 +87,38 @@ Example:\
 ```(lab_t){.l = 100.0, .a = -125.01, .b = 124.99}``` is a lab_t value for color cyan.
 
 ### Distance params
-## Define macros
+Some of the color difference functions require additional parameters. If that's the case, these parameters can be passed to the relevant function using special structure. (This is done in order to reduce the number of parameters and make it more convinient to use these functions) 
+Field names in the defined structures are the same as parameter names in the formulas. Currently there are three such parameters structures.
+```c
+typedef struct{
+	double K1, K2, KL, KC, KH;
+}CIE94_params;
 
+typedef struct{
+	double KL, KC, KH;
+}CIEDE2000_params;
+
+typedef struct{
+	double KL, KC;
+}CMC_params;
+```
+
+The above structures define parameters for color distances ```CIE94```,  ```CIEDE2000``` and  ```CMC``` respectively.
+## Define macros
+The only macros defined in ```galba_colormath.h``` are pre-made parameter strucuture literals.
+
+The purpose of these macros is to provide the user with ready to use parameter structs with desirable default values. These defaults were chosen to reflect most common usages of the distance functions.
+
+Currently there are five pre-made parameter struct literals, defined as the following: 
+```c
+#define CIE94_TEXTILES ((const CIE94_params){.K1 = 0.048, .K2 = 0.014, .KL = 2, .KC = 1, .KH = 1 })
+#define CIE94_GRAPHIC_ARTS ((const CIE94_params){.K1 = 0.045, .K2 = 0.015, .KL = 1, .KC = 1, .KH = 1})
+
+#define CIEDE2000_BASE ((const CIEDE2000_params){.KL = 1, .KC = 1, .KH = 1})
+
+#define CMC_ACCEPTABILITY ((const CMC_params){.KL = 2, .KC = 1})
+#define CMC_PERCEPTIBILITY ((const CMC_params){.KL = 1, .KC = 1})
+```
 ## Functions
 
 ### RGB encoding-related functions
