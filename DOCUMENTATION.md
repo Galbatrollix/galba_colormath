@@ -41,6 +41,8 @@ Additionally, test suite requies the following headers and their contents:
     - Yes, the code should produce correct results when compiled with optimization level of O3 on gcc. It doesn't rely on dodgy pointer/union casts in any of the provided functions.
 3) Can this code be compiled with -fast math option using gcc?
     - Yes, but it was not developed with this assumption in mind, make sure it passes the tests if you try compiling with mast math enabled
+4) My compiler generates warnings from this code, why?
+    - Depending on enabled compiler warnings, this code may generate false-positive warnings in some places. Certain parts of the implementation perform potentially lossy conversions (for example int to unsigned char) or subscipt arrays with character type. Test suite also extensively compares floats for equality. I recommend completely disabling the faulty warnings, especially the char subscripts and float comparison, since unlike lossy conversions these warnings are rarely tripped unintentionally. 
 ## Structure definitions
 ### Color structs
 The header defines 3 separate structures for dealing with color math and conversions. All colorspace and color distance related functions in the library operate on these types.
