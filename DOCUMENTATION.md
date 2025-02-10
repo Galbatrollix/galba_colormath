@@ -291,7 +291,61 @@ lab_t LAB_from_RGB(rgb_t rgb_input){
 ```
 
 ### Color distance functions
+Galba colormath header declares a selection of functions for calculating various color distances.\
+
+Some functions have also alternative variants that assume certain set of additional parameters and do not require passing a params structure.\
+Exhaustive list of full (allowing for params struct passing) versions of distance functions: 
+```c
+double euclid_dist(rgb_t color1, rgb_t color2);
+double delta_CIE76(lab_t color1, lab_t color2);
+double delta_CIE94_full(lab_t color1, lab_t color2, CIE94_params params);
+double delta_CIEDE2000_full(lab_t color1, lab_t color2, CIEDE2000_params params);
+double delta_CMC_full(lab_t color1, lab_t color2, CMC_params params);
+```
+***
+#### euclid_dist
+This function computes euclidean distance between two values in RGB colorspace.
+
+***
+#### delta_CIE76
+This function computes CIE76 distance between two values in Lab colorspace.
+
+***
+#### delta_CIE94_full
+This function computes CIE94 distance between two values in Lab colorspace. Allows for passing a struct with additional parameters to the formula. Note that CIE94 is not symmetric (that is CIE94(a, b) != CIE94(b, a)). First parameter is the "reference" color in the formula.
+
+Besides the full version of the function, additional two convinience functions are defined as follows: 
+```c
+#define CIE94_TEXTILES ((const CIE94_params){.K1 = 0.048, .K2 = 0.014, .KL = 2, .KC = 1, .KH = 1 })
+#define CIE94_GRAPHIC_ARTS ((const CIE94_params){.K1 = 0.045, .K2 = 0.015, .KL = 1, .KC = 1, .KH = 1})
+// equivalent to CIE94_full with parameter CIE94_GRAPHIC_ARTS
+double delta_CIE94_g(lab_t color1, lab_t color2);
+// equivalent to CIE94_full with parameter CIE94_TEXTILES
+double delta_CIE94_t(lab_t color1, lab_t color2);
+```
+***
+#### delta_CIEDE2000_full
+This function computes CIEDE2000 distance between two values in Lab colorspace. Allows for passing a struct with additional parameters to the formula.
+
+Besides the full version of the function, additional convinience function is defined as follows: 
+```c
+#define CIEDE2000_BASE ((const CIEDE2000_params){.KL = 1, .KC = 1, .KH = 1})
+// equivalent to CIE2000_full with parameter CIEDE2000_BASE
+double delta_CIEDE2000(lab_t color1, lab_t color2);
+```
+***
+#### delta_CMC_full
+This function computes CMC distance between two values in Lab colorspace. Allows for passing a struct with additional parameters to the formula. Note that CMC is not symmetric (that is CMC(a, b) != CMC(b, a)). First parameter is the "reference" color in the formula.
+
+Besides the full version of the function, additional two convinience functions are defined as follows: 
+```c
+#define CMC_ACCEPTABILITY ((const CMC_params){.KL = 2, .KC = 1})
+#define CMC_PERCEPTIBILITY ((const CMC_params){.KL = 1, .KC = 1})
+// equivalent to CMC_full with parameter CMC_PERCEPTIBILITY
+double delta_CMC_p(lab_t color1, lab_t color2);
+// equivalent to CMC_full with parameter CMC_ACCEPTIBILITY
+double delta_CMC_a(lab_t color1, lab_t color2);
+```
 
 ## Test suite
-
-### TODO DECIDE ON STRUCTURE OF THIS
+Library offers a simple test suite together with the 
