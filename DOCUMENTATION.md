@@ -350,7 +350,7 @@ double delta_CMC_a(lab_t color1, lab_t color2);
 ## Test suite
 Library offers a simple test suite together with the source code.
 
-While the test suite is not exhaustive (testing all possible values for colors and their combinations is not feasable), it aims to test most common potential pitfals. Couple examples among the test cases are worth noting: 
+While the test suite is not exhaustive (testing all possible values for colors and their combinations is not feasable), it aims to test most common potential pitfalls. Couple examples among the test cases are worth noting: 
 - Exhaustive tests for rgb_t to i32 conversions
 - Round trip and weird input cases for i32 and hex conversions
 - Round trip tests for RGB->XYZ->LAB->XYZ->RGB converions
