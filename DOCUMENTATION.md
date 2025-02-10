@@ -171,7 +171,8 @@ Char pointer must be a valid (not NULL) pointer to a memory with at least 6 acce
 Attempting to use the function with NULL pointer will cause a null pointer dereference error. Similarly, providing the function with pointer with less than 6 bytes of available memory will cause a buffer over-read error.
 ```c
 int32_t color1 = i32_from_HEX("ABC");  				   // WRONG, buffer overread
-int32_t color2 = i32_from_HEX((char[6]){'a','b','c','d','e','f'}); // OK, result = 0x00ABCDEF
+int32_t color2 = i32_from_HEX(NULL);				   // WRONG, nullptr dereference
+int32_t color3 = i32_from_HEX((char[6]){'a','b','c','d','e','f'}); // OK, result = 0x00ABCDEF
 ```
 The pointer should contain an address of first meaningful character of hexstring - in other words for string ```"#abFfcC"``` the ```hex_arr``` pointer should point to 'a' character, not to '#' character.
 If provided hex string contains invalid characters (for example: '\0', '\n', 'R', etc.), then these characters will be interpreted as 0.
@@ -180,15 +181,58 @@ const char hex_color[] = "#AABBCC";
 int32_t color1 = i32_from_HEX(hex_color);  // WRONG, result = 0x000AABBC
 int32_t color2 = i32_from_HEX(hex_color + 1); // OK, result = 0x00AABBCC
 ```
-First byte of resulting value is always 0. 
+First byte of resulting value is always 0.\
+The contents of char array are declared const and are not modified by the function. 
+
+##### RGB_from_HEX
+This function takes constant char pointer pointing to the first element of hex string and returns the same color as an rgb_t structure.\
+Rules for the value of input parameter the same as in ```i32_from_HEX```. 
 
 ##### HEX_from_i32
+This function writes to a char buffer.\
+Data written to the buffer is a hex string representation of color provided in int32_t representation.
 
-
-Additionally, two more functions are offered to the user as a convinience tool.
+Char pointer must be a valid (not NULL) pointer to a writable memory with at least 6 accessible bytes.\
+Attempting to use the function with NULL pointer will cause a null pointer dereference error. Similarly, providing the function with pointer with less than 6 bytes of available memory will cause a buffer over-write error. Providing a pointer to read-only memory will also likely cause an error.
 ```c
-void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input);
-void HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
+char buf_short[3];
+char buffer[6];
+HEX_from_i32(buf_short, (int32_t)0x00CCBBAA);   	// WRONG, buffer over-write
+HEX_from_i32(buffer, NULL);  				// WRONG, nullptr dereference.
+HEX_from_i32("CONSTANT_STRING", (int32_t)0x00CCBBAA);	// WRONG, read only memory attempted to write
+HEX_from_i32(buffer, 0x00123456);  			// OK, written "123456" to memory  
+```
+
+Hex string written by the function doesn not contain ```'#'``` character, nor ```'\0'``` character.\
+```c
+char hex_color[7] = {0};
+char hex_color2[7];
+HEX_from_i32(hex_color, (int32_t)0x00CCBBAA);   // OK, written "CCBBAA" to memory.
+HEX_from_i32(hex_color2, (int32_t)0x00BCBCAA);  // OK, written "BCBCAA" to memory.
+puts(hex_color); 				// OK, prints "CCBBAA\n"
+puts(hex_color2);                               // ERROR, non-null-terminated string passed to puts function
+```
+If generated string has letters between ```'a'``` and ```'f'```, then they will always be generated as uppercase.\
+
+##### HEX_from_RGB
+This function writes to a char buffer.\
+Data written to the buffer is a hex string representation of color provided in struct rgb_t.
+
+Rules for the value of output pointer parameter the same as in ```HEX_from_i32```.
+
+##### Convinience functions
+The header also defines two convinience functions aiming to provide an alternative to ```HEX_from_i32``` and ```HEX_from_RGB``` for users that expect the ```'#'``` character at the beginning and ```'\0'``` string terminator at the end. These functions also return the passed char pointer to ease logging with functions such as ```printf``` or ```puts```.
+
+Rules for output parameter is the same as in the corresponding base variants, however the required write-able memory size is 8 bytes instead of 6.
+```c
+char* HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input);
+char* HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
+```
+Example:
+```c
+char buffer[8];
+puts(HEX_from_RGB_2(buffer, (rgb_t){0,255,0})); 	 // prints "#00FF00\n"
+puts(HEX_from_i32_2(buffer, (int32_t)0xfccffa));         // prints "#FCCFFA\n"
 ```
 ### Colorspace conversion functions
 
