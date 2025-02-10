@@ -36,9 +36,9 @@ bool (*test_functions[TEST_COUNT])(void) = {
     test_premade_XYZ_RGB
 };
 
-
-#include <time.h>
-#include <stdlib.h>
+static void print_rgb(rgb_t p){
+    printf("rgb(%u %u %u)", p.r, p.g, p.b);
+}
 int main(void){
 
     int tests_succeeded = 0;
@@ -49,6 +49,9 @@ int main(void){
     }
 
     printf("All tests completed.\nSuccessful tests: %d/%d\n", tests_succeeded, TEST_COUNT);
+
+
+
 
 }
 

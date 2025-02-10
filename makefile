@@ -1,14 +1,14 @@
-#SHELL = cmd
+SHELL = cmd
 
 APP_NAME = program
 
-C_FLAGS = -O3 -g0 -Wpedantic -pedantic-errors  -Wall  -Wno-unused-variable -Wno-unused-function -Wno-format 
+C_FLAGS = -O3 -g0 -Wpedantic -pedantic-errors  -Wall  -Wno-unused-variable -Wno-unused-function 
 
 # IF additional checker flags
 C_FLAGS += -Wstrict-overflow=5 -Wwrite-strings -Wconversion -Wunused-variable -Wunused-function -Wformat
 
 # IF linux:
-C_FLAGS += -lm -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -Wconversion -fanalyzer
+#C_FLAGS += -lm -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -Wconversion -fanalyzer
 
 C_COMPILER = gcc
 

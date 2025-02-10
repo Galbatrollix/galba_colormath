@@ -85,16 +85,18 @@ void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input){
 }
 
 
-void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input){
+char* HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input){
 	string_buffer[0] = '#';
 	string_buffer[7] = '\0';
 	HEX_from_RGB(string_buffer + 1, rgb_input);
+	return string_buffer;
 }
 
-void HEX_from_i32_2(char string_buffer[8], int32_t int_repr){
+char* HEX_from_i32_2(char string_buffer[8], int32_t int_repr){
 	string_buffer[0] = '#';
 	string_buffer[7] = '\0';
 	HEX_from_i32(string_buffer + 1, int_repr);
+	return string_buffer;
 }
 
 

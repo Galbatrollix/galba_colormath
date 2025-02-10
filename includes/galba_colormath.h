@@ -31,7 +31,6 @@ lab_t LAB_from_RGB(rgb_t rgb_input);
 rgb_t RGB_from_i32(int32_t int_repr);
 int32_t i32_from_RGB(rgb_t rgb_input);
 
-
 int32_t i32_from_HEX(const char hex_arr[6]);
 void HEX_from_i32(char arr_buffer[6], int32_t int_repr);
 
@@ -39,9 +38,9 @@ rgb_t RGB_from_HEX(const char hex_arr[6]);
 void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input);
 
 //Convinience variants of the above
-//Additionally insert '#' at the beggining and '\0' null terminator at the end
-void HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input);
-void HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
+//Additionally insert '#' at the beggining and '\0' null terminator at the end and return string_buffer
+char*  HEX_from_RGB_2(char string_buffer[8], rgb_t rgb_input);
+char*  HEX_from_i32_2(char string_buffer[8], int32_t int_repr);
 
 
 
