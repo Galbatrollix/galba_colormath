@@ -155,15 +155,16 @@ void HEX_from_i32(char arr_buffer[6], int32_t int_repr);
 rgb_t RGB_from_HEX(const char hex_arr[6]);
 void HEX_from_RGB(char arr_buffer[6], rgb_t rgb_input);
 ```
-##### RGB_from_i32
+***
+#### RGB_from_i32
 This function takes int32_t and interprets it as a RGB-encoding integer according to aforementioned rules.\
 First byte is ignored and 2nd, 3rd and 4th bytes are interpreted as channels R, G, B respectively. 
-
-##### i32_from_RGB
+***
+#### i32_from_RGB
 This function takes struct rgb_t and returns the same color encoded as int32_t.\
 First byte of resulting value is always 0. 
-
-##### i32_from_HEX
+***
+#### i32_from_HEX
 This function takes constant char pointer pointing to the first element of hex string and returns the same color in the int32_t representation. 
 
 
@@ -183,12 +184,12 @@ int32_t color2 = i32_from_HEX(hex_color + 1); // OK, result = 0x00AABBCC
 ```
 First byte of resulting value is always 0.\
 The contents of char array are declared const and are not modified by the function. 
-
-##### RGB_from_HEX
+***
+#### RGB_from_HEX
 This function takes constant char pointer pointing to the first element of hex string and returns the same color as an rgb_t structure.\
 Rules for the value of input parameter the same as in ```i32_from_HEX```. 
-
-##### HEX_from_i32
+***
+#### HEX_from_i32
 This function writes to a char buffer.\
 Data written to the buffer is a hex string representation of color provided in int32_t representation.
 
@@ -213,14 +214,14 @@ puts(hex_color); 				// OK, prints "CCBBAA\n"
 puts(hex_color2);                               // ERROR, non-null-terminated string passed to puts function
 ```
 If generated string has letters between ```'a'``` and ```'f'```, then they will always be generated as uppercase.\
-
-##### HEX_from_RGB
+***
+#### HEX_from_RGB
 This function writes to a char buffer.\
 Data written to the buffer is a hex string representation of color provided in struct rgb_t.
 
 Rules for the value of output pointer parameter the same as in ```HEX_from_i32```.
-
-##### Convinience functions
+***
+#### Convinience functions
 The header also defines two convinience functions aiming to provide an alternative to ```HEX_from_i32``` and ```HEX_from_RGB``` for users that expect the ```'#'``` character at the beginning and ```'\0'``` string terminator at the end. These functions also return the passed char pointer to ease logging with functions such as ```printf``` or ```puts```.
 
 Rules for output parameter is the same as in the corresponding base variants, however the required write-able memory size is 8 bytes instead of 6.
@@ -235,10 +236,59 @@ puts(HEX_from_RGB_2(buffer, (rgb_t){0,255,0})); 	 // prints "#00FF00\n"
 puts(HEX_from_i32_2(buffer, (int32_t)0xfccffa));         // prints "#FCCFFA\n"
 ```
 ### Colorspace conversion functions
+Galba colormath header declares functions for converting between Lab, XYZ and sRGB color spaces.
+All the following functions assume sRGB D65 reference point with a 2 degree standard observer.
+
+The following functions should allow a RGB -> LAB/XYZ -> RGB round trip that work for all possible RGB colors.
+If that is not the case, the exhaustive round trip test will catch it.
+Because of data loss when converting to sRGB (currently sRGB is stored as unsigned integers in range 0-255), a full round trip is not possible the other way around.
+
+Exhaustive list of colorspace conversion functions is the following: 
+```c
+xyz_t XYZ_from_RGB(rgb_t rgb_input);
+rgb_t RGB_from_XYZ(xyz_t xyz_input);
+
+xyz_t XYZ_from_LAB(lab_t lab_input);
+lab_t LAB_from_XYZ(xyz_t xyz_input);
+
+rgb_t RGB_from_LAB(lab_t lab_input);
+lab_t LAB_from_RGB(rgb_t rgb_input);
+```
+***
+#### XYZ_from_RGB
+Converts sRGB to XYZ color. XYZ color range is not clipped to 0-100, therefore:\
+For ```(rgb_t){255,255,255}``` the result will be ```(xyz_t){95.05, 100.00, 108.88}```
+***
+#### RGB_from_XYZ
+Converts XYZ to sRGB color. Resulting color is rounded to nearest integer in range 0-255. If XYZ were to produce value larger than 255 for one of the channels, the channel will be clipped to 255. Similarly, any negative values in the channels will be transformed into 0.\
+For ```(xyz_t){95.0, 123.0, 109.0}``` the result will be ```(rgb_t){210, 255, 250}```
+
+***
+#### XYZ_from_LAB
+Converts Lab color to XYZ color. XYZ color range is not clipped.
+
+***
+#### LAB_from_XYZ
+Converts XYZ color to Lab color. Lab color range is not clipped.
+
+***
+#### RGB_from_LAB
+Defined as:
+```c
+rgb_t RGB_from_LAB(lab_t lab_input){
+	return RGB_from_XYZ(XYZ_from_LAB(lab_input));
+}
+```
+***
+#### LAB_from_RGB
+Defined as: 
+```c
+lab_t LAB_from_RGB(rgb_t rgb_input){
+	return LAB_from_XYZ(XYZ_from_RGB(rgb_input));
+}
+```
 
 ### Color distance functions
-
-## Use examples
 
 ## Test suite
 
