@@ -1,15 +1,15 @@
 #uncomment the below if using mingw
-#SHELL = cmd
+# SHELL = cmd
 
 APP_NAME = program
 
-C_FLAGS = -O3 -g0 -Wpedantic -pedantic-errors  -Wall  -Wno-unused-variable -Wno-unused-function 
+C_FLAGS = -O3 -g0 -Wpedantic -pedantic-errors  -Wall  -Wno-unused-variable -Wno-unused-function
 
 # IF additional checker flags
-C_FLAGS += -Wstrict-overflow=5 -Wwrite-strings -Wconversion -Wunused-variable -Wunused-function -Wformat
+C_FLAGS += -Wstrict-overflow=5 -Wwrite-strings -Wconversion -Wunused-variable -Wunused-function -Wformat 
 
 # IF linux:
-#C_FLAGS += -lm -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -Wconversion -fanalyzer
+C_FLAGS += -fsanitize=address,undefined -fsanitize-undefined-trap-on-error -Wconversion -fanalyzer -lm
 
 C_COMPILER = gcc
 
@@ -30,6 +30,16 @@ C_OBJ_FILES = $(patsubst %.c, %.o, $(C_SRC_FILES))
 # adding Makefile itself to the rule prerequisites will make sure everything is recompiled if makefile content gets changed
 $(APP_NAME).exe: $(C_OBJ_FILES) $(C_HEADERS) Makefile
 	$(C_COMPILER) $(C_FLAGS) $(C_OBJ_FILES) -o $(APP_NAME).exe
+
+# for mingw
+# clean:
+# 	del /Q /F $(APP_NAME).exe
+# 	del /Q /F $(C_SOURCE_FOLDER)\\*.o
+# 	del /Q /F $(TEST_FOLDER)\\*.o
+# 	del /Q /F main.o
+
+# run: $(APP_NAME).exe
+# 	$(APP_NAME).exe
 
 
 %.o: %.c Makefile

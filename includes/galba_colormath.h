@@ -54,7 +54,6 @@ typedef struct{
 
 #define CIE94_TEXTILES ((const CIE94_params){.K1 = 0.048, .K2 = 0.014, .KL = 2, .KC = 1, .KH = 1 })
 #define CIE94_GRAPHIC_ARTS ((const CIE94_params){.K1 = 0.045, .K2 = 0.015, .KL = 1, .KC = 1, .KH = 1})
-
 // equivalent to CIE94_full with parameter CIE94_GRAPHIC_ARTS
 double delta_CIE94_g(lab_t color1, lab_t color2);
 // equivalent to CIE94_full with parameter CIE94_TEXTILES

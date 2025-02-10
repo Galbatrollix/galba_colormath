@@ -50,15 +50,12 @@ int main(void){
 
     int tests_succeeded = 0;
 
-    // for(int i=0; i<TEST_COUNT; i++){
-    //     tests_succeeded += test_functions[i]();
+    for(int i=0; i<TEST_COUNT; i++){
+        tests_succeeded += test_functions[i]();
 
-    // }
+    }
 
     printf("All tests completed.\nSuccessful tests: %d/%d\n", tests_succeeded, TEST_COUNT);
-
-    print_xyz(XYZ_from_RGB((rgb_t){255,255,255}));
-    print_rgb(RGB_from_XYZ((xyz_t){95, 123, 109}));
 
 }
 
