@@ -348,4 +348,21 @@ double delta_CMC_a(lab_t color1, lab_t color2);
 ```
 
 ## Test suite
-Library offers a simple test suite together with the 
+Library offers a simple test suite together with the source code.
+
+While the test suite is not exhaustive (testing all possible values for colors and their combinations is not feasable), it aims to test most common potential pitfals. Couple examples among the test cases are worth noting: 
+- Exhaustive tests for rgb_t to i32 conversions
+- Round trip and weird input cases for i32 and hex conversions
+- Round trip tests for RGB->XYZ->LAB->XYZ->RGB converions
+- Exact result tests for all but the euclid and CIE76 distances (the implementation of these two is so simple to the point it's pointless to test these, inspect code instead if you are interested in their behaviour)
+
+It's worth to note that test data for exact value color distance tests comes from 2 main sources:
+- Academic research, accessible [here](https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/)
+- Cross referencing with values produced by [colors.js](https://github.com/marak/colors.js/) implementations
+
+Note:\
+```c
+bool test_premade_XYZ_LAB(void);
+bool test_premade_LAB_XYZ(void);
+```
+Two functions that test Lab and XYZ conversions have rather large margin of error allowed as the pre-made values obtained by me were themselves roudned to 3rd digit after dot, so slight error is expected to carry over.  
