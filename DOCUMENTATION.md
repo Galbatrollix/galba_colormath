@@ -360,7 +360,7 @@ It's worth to note that test data for exact value color distance tests comes fro
 - Academic research, accessible [here](https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/)
 - Cross referencing with values produced by [colors.js](https://github.com/marak/colors.js/) implementations
 
-Note:\
+Note:
 ```c
 bool test_premade_XYZ_LAB(void);
 bool test_premade_LAB_XYZ(void);
